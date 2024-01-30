@@ -75,9 +75,9 @@ public class Hardware extends MecanumDrive {
     private TrajectoryFollower follower;
     public DcMotorEx FL, BL, BR, FR, spoolIn, spoolOut, hangLeft, hangRight;
 
-    public Servo spoolAngleLeft, spoolAngleRight, claw, backPixel;
+    public Servo spoolAngleLeft, spoolAngleRight, claw;
 
-    public CRServo planeShooter;
+    public CRServo planeShooter,backPixel;
     private List<DcMotorEx> motors;
 
     private IMU imu;
@@ -120,7 +120,7 @@ public class Hardware extends MecanumDrive {
         spoolAngleLeft = hardwareMap.get(Servo.class, "spoolAngleLeft");
         spoolAngleRight = hardwareMap.get(Servo.class, "spoolAngleRight");
         claw = hardwareMap.get(Servo.class, "claw");
-        backPixel = hardwareMap.get(Servo.class, "backPixel");
+        backPixel = hardwareMap.get(CRServo.class, "backPixel");
 
 
 

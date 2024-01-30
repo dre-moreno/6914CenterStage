@@ -65,7 +65,7 @@ public class tellmyOps extends LinearOpMode {
             drive.spoolAngleLeft.setPosition(-gamepad2.left_stick_y/2+.325);
             drive.spoolAngleRight.setPosition(gamepad2.left_stick_y/2+.325);
 
-            drive.backPixel.setPosition(gamepad2.left_stick_x);
+            drive.backPixel.setPower(gamepad2.left_stick_x);
 
 
 
