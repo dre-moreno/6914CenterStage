@@ -4,7 +4,7 @@ Our FTC project assisted by Road Runner's Motion planning Library
 
 ## Installation
 
-1. Download or clone this repo with `git clone --single-branch -b quickstart1 https://github.com/acmerobotics/road-runner-quickstart.git`.
+1. Download or clone this repo with `git clone --single-branch -b quickstart1 https://github.com/dre-moreno/6914CenterStage.git`.
 
 1. Open the project in Android Studio and build `TeamCode` like any other `ftc_app` project.
 
