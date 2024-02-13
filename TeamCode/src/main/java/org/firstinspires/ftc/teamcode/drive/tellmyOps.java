@@ -13,6 +13,8 @@ public class tellmyOps extends LinearOpMode {
 
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+        double rotation = 384.5;
+
         waitForStart();
 
         while (!isStopRequested()) {
@@ -57,7 +59,7 @@ public class tellmyOps extends LinearOpMode {
             }
 
             if(gamepad1.left_bumper) {
-                drive.planeShooter.setPower(1);
+                drive.planeShooter.setPower(-1);
             } else {
                 drive.planeShooter.setPower(0);
 
@@ -65,9 +67,34 @@ public class tellmyOps extends LinearOpMode {
             drive.spoolAngleLeft.setPosition(-gamepad2.left_stick_y/2+.325);
             drive.spoolAngleRight.setPosition(gamepad2.left_stick_y/2+.325);
 
-            drive.backPixel.setPower(gamepad2.left_stick_x);
+
+//            drive.backPixel.setPosition(.5 + gamepad2.left_stick_x/2);
+     //       drive.backPixel.setPosition(gamepad2.left_stick_x/2);
 
 
+            if(gamepad2.dpad_up){
+                drive.hangLeft.setTargetPosition((int)(5*rotation));
+                drive.hangRight.setTargetPosition((int)(5*rotation));
+
+                drive.hangLeft.setPower(-.3);
+                drive.hangRight.setPower(.3);
+
+                drive.hangLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                drive.hangRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                while(drive.hangLeft.isBusy() && drive.hangRight.isBusy()){
+                    //just prints while the lift is going up.
+                    telemetry.addData("Status", "Lift Arms Rasing");
+                    telemetry.update();
+                }
+
+                drive.hangLeft.setPower(0);
+                drive.hangRight.setPower(0);
+
+                //so we can lower the hangarms
+                drive.hangLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                drive.hangRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            }
 
             drive.update();
 
@@ -76,6 +103,7 @@ public class tellmyOps extends LinearOpMode {
             telemetry.addData("y", poseEstimate.getY());
             telemetry.addData("heading", poseEstimate.getHeading());
             telemetry.addData("left_stick",gamepad2.left_stick_x);
+            telemetry.addData("servo pos", drive.backPixel.getPosition());
             telemetry.update();
         }
     }
