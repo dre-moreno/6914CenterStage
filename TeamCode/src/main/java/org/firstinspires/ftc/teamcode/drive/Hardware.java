@@ -109,9 +109,6 @@ public class Hardware extends MecanumDrive {
         spoolIn = hardwareMap.get(DcMotorEx.class, "spoolIn");
         spoolOut = hardwareMap.get(DcMotorEx.class, "spoolOut");
 
-        hangLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        hangLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
         hangLeft = hardwareMap.get(DcMotorEx.class,"hangLeft");
         hangRight = hardwareMap.get(DcMotorEx.class,"hangRight");
 
@@ -140,6 +137,9 @@ public class Hardware extends MecanumDrive {
         if (RUN_USING_ENCODER) {
             setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
+
+        hangLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        hangLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
         setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 

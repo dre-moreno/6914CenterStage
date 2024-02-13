@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 @TeleOp(name = "TeleOp - 1/26/24", group = "comp")
 public class tellmyOps extends LinearOpMode {
@@ -47,10 +48,7 @@ public class tellmyOps extends LinearOpMode {
             //hangarms
             //always down hold to raise
 
-            if(gamepad1.left_trigger > 0) {
-                drive.hangLeft.setPower(-gamepad1.left_trigger*.8);
-                drive.hangRight.setPower(gamepad1.left_trigger*.8);
-            } else if (gamepad1.right_trigger > 0){
+              if (gamepad1.right_trigger > 0){
                 drive.hangLeft.setPower(gamepad1.right_trigger*.8);
                 drive.hangRight.setPower(-gamepad1.right_trigger*.8);
             } else {
@@ -62,7 +60,10 @@ public class tellmyOps extends LinearOpMode {
                 drive.planeShooter.setPower(-1);
             } else {
                 drive.planeShooter.setPower(0);
+            }
 
+            if(gamepad1.b){
+                drive.planeShooter.setPower(1);
             }
             drive.spoolAngleLeft.setPosition(-gamepad2.left_stick_y/2+.325);
             drive.spoolAngleRight.setPosition(gamepad2.left_stick_y/2+.325);
@@ -72,15 +73,18 @@ public class tellmyOps extends LinearOpMode {
      //       drive.backPixel.setPosition(gamepad2.left_stick_x/2);
 
 
-            if(gamepad2.dpad_up){
-                drive.hangLeft.setTargetPosition((int)(5*rotation));
-                drive.hangRight.setTargetPosition((int)(5*rotation));
+            if(gamepad1.dpad_up){
+                drive.hangLeft.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+                drive.hangRight.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
 
-                drive.hangLeft.setPower(-.3);
-                drive.hangRight.setPower(.3);
+                drive.hangLeft.setTargetPosition(-(int)(rotation*4.5));
+                drive.hangRight.setTargetPosition((int)(rotation*4.5));
 
-                drive.hangLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                drive.hangRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                drive.hangLeft.setPower(.5);
+                drive.hangRight.setPower(.5);
+
+                drive.hangLeft.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+                drive.hangRight.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
 
                 while(drive.hangLeft.isBusy() && drive.hangRight.isBusy()){
                     //just prints while the lift is going up.
@@ -92,8 +96,8 @@ public class tellmyOps extends LinearOpMode {
                 drive.hangRight.setPower(0);
 
                 //so we can lower the hangarms
-                drive.hangLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                drive.hangRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                drive.hangLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+                drive.hangRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
             }
 
             drive.update();
