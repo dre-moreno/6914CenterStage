@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
-@TeleOp(name = "TeleOp - 1/26/24", group = "comp")
+@TeleOp(name = "TeleOp - V3", group = "comp")
 public class tellmyOps extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
