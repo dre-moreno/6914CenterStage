@@ -329,9 +329,9 @@ public class BlueRightAuto_YP extends LinearOpMode {
                 sleep(50);
                 drive.followTrajectory(goToWhite);
                 drive.spoolAngleRight.setPosition(.325);
-                sleep(2000);
+                sleep(1000);
                 drive.claw.setPosition(.99);
-                sleep(100);
+                sleep(1000);
                 drive.spoolAngleRight.setPosition(-.175);
                 drive.followTrajectory(park);
 
