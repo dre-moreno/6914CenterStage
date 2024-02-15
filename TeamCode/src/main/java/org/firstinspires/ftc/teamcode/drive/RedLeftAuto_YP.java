@@ -1,5 +1,4 @@
 package org.firstinspires.ftc.teamcode.drive;
-
 /* Copyright (c) 2019 FIRST. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -53,22 +52,22 @@ import java.util.List;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list.
  */
-@Autonomous(name = "Comp: Blue Right - P&Y", group = "Blue Auto - YP")
-public class BlueRightAuto_YP extends LinearOpMode {
+@Autonomous(name = "Comp: Red Left - P&Y", group = "Red Auto - YP")
+public class RedLeftAuto_YP extends LinearOpMode {
 
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
 
     // TFOD_MODEL_ASSET points to a model file stored in the project Asset location,
     // this is only used for Android Studio when using models in Assets.
-    private static final String TFOD_MODEL_ASSET = "blueMarkerV2.tflite";
+    private static final String TFOD_MODEL_ASSET = "redMarkerV2.tflite";
     // TFOD_MODEL_FILE points to a model file stored onboard the Robot Controller's storage,
     // this is used when uploading models directly to the RC using the model upload interface.
-    private static final String TFOD_MODEL_FILE = "/sdcard/FIRST/tflitemodels/blueMarker.tflite";
+    private static final String TFOD_MODEL_FILE = "/sdcard/FIRST/tflitemodels/redMarkerV2.tflite";
     // Define the labels recognized in the model for TFOD (must be in training order!)
     private static final String[] LABELS = {
-            "BlueCenter",
-            "BlueLeft",
-            "BlueRight"
+            "RedCenter",
+            "RedLeft",
+            "RedRight"
     };
 
     /**
@@ -94,14 +93,13 @@ public class BlueRightAuto_YP extends LinearOpMode {
 
 
         Hardware drive = new Hardware(hardwareMap);
-        drive.claw.setPosition(1);
-        drive.backPixel.setPosition(0);
+        drive.claw.setPosition(.99);
         waitForStart();
 
         if (opModeIsActive()) {
             while (opModeIsActive()) {
 
-//                drive.spoolAngleRight.setPosition(.23);
+
                 telemetryTfod();
 
                 // Push telemetry to the Driver Station.
@@ -195,75 +193,62 @@ public class BlueRightAuto_YP extends LinearOpMode {
 
         Hardware drive = new Hardware(hardwareMap);
 
-        drive.setPoseEstimate(new Pose2d(-34,70,3*Math.PI/2));
+        drive.setPoseEstimate(new Pose2d(-34,-70,Math.PI/2));
 
-        //done needs testing - on field
-        Trajectory purpleLeft = drive.trajectoryBuilder(new Pose2d(-34,70,3*Math.PI/2))
-                .splineToLinearHeading(new Pose2d(-37,43,0),0)
+        Trajectory purpleLeft = drive.trajectoryBuilder(new Pose2d(-34,-70,Math.PI/2))
+                .lineTo(new Vector2d(-44,-55))
                 .build();
 
-        //done needs testing - on field
-        Trajectory purpleCenter = drive.trajectoryBuilder(new Pose2d(-34,70,3*Math.PI/2))
-                .lineTo(new Vector2d(-38,45))
+        Trajectory purpleCenter = drive.trajectoryBuilder(new Pose2d(-34,-70,Math.PI/2))
+                .lineTo(new Vector2d(-38,-45))
                 .build();
 
-        //done needs testing - on field
-        Trajectory purpleRight = drive.trajectoryBuilder(new Pose2d(-34,70,3*Math.PI/2))
-                .lineTo(new Vector2d(-44,55))
-                .build();
-
-        //all Blue***Back  done needs testing
-        Trajectory blueLeftBack = drive.trajectoryBuilder(purpleLeft.end())
-                .lineToLinearHeading(new Pose2d(-55,60,3*Math.PI/2))
-                .build();
-
-        Trajectory blueCenterBack = drive.trajectoryBuilder(purpleCenter.end())
-                .lineTo(new Vector2d(-55,60))
-                .build();
-
-        Trajectory blueRightBack = drive.trajectoryBuilder(purpleRight.end())
-                .lineTo(new Vector2d(-55,60))
+        Trajectory purpleRight = drive.trajectoryBuilder(new Pose2d(-34,-70,Math.PI/2))
+                .splineToLinearHeading(new Pose2d(-38,-40,0),Math.PI/2)
                 .build();
 
 
-        //done needs testing
-        TrajectorySequence toBackdrop = drive.trajectorySequenceBuilder(new Pose2d(-55,60,3*Math.PI/2))
-                .lineToLinearHeading(new Pose2d(-55,19,3*Math.PI/2))
-                .lineTo(new Vector2d(-49,19))
-                .turn(-Math.PI/2)
+        Trajectory redLeftBack = drive.trajectoryBuilder(purpleLeft.end())
+                .lineTo(new Vector2d(-55,-60))
+                .build();
+
+        Trajectory redCenterBack = drive.trajectoryBuilder(purpleCenter.end())
+                .lineTo(new Vector2d(-55,-60))
+                .build();
+
+        Trajectory redRightBack = drive.trajectoryBuilder(purpleRight.end())
+                .lineToLinearHeading(new Pose2d(-55,-60,Math.PI/2))
+                .build();
+
+        TrajectorySequence toBackdrop = drive.trajectorySequenceBuilder(new Pose2d(-55,-60,Math.PI/2))
+                .lineToLinearHeading(new Pose2d(-55,-15,Math.PI/2))
+                .lineTo(new Vector2d(-49,-15))
+                .turn(Math.PI/2)
                 .back(95)
                 .build();
 
         Trajectory backdropLeft = drive.trajectoryBuilder(toBackdrop.end())
-                .lineToLinearHeading(new Pose2d(52,48,Math.PI))
+                .lineToLinearHeading(new Pose2d(51.5,-35,Math.PI))
                 .build();
 
         Trajectory backdropCenter = drive.trajectoryBuilder(toBackdrop.end())
-                .lineToLinearHeading(new Pose2d(52,42,Math.PI))
+                .lineToLinearHeading(new Pose2d(51.5,-42,Math.PI))
                 .build();
 
 
         Trajectory backdropRight = drive.trajectoryBuilder(toBackdrop.end())
-                .lineToLinearHeading(new Pose2d(52,34,Math.PI))
+                .lineToLinearHeading(new Pose2d(51.5,-48,Math.PI))
                 .build();
 
-
-//        TrajectorySequence lineWhiteCenter = drive.trajectorySequenceBuilder(backdropCenter.end())
-//                .lineTo(new Vector2d(46,17))
-//                .build();
-//
-//        Trajectory goToWhite = drive.trajectoryBuilder(lineWhiteCenter.end())
-//                .forward(99)
-//                .build();
-
+        //blue right
         TrajectorySequence toParkCenter = drive.trajectorySequenceBuilder(backdropCenter.end())
-                .lineTo(new Vector2d(46,18))
+                .lineTo(new Vector2d(46,-17))
                 .build();
         TrajectorySequence toParkLeft = drive.trajectorySequenceBuilder(backdropLeft.end())
-                .lineTo(new Vector2d(46,18))
+                .lineTo(new Vector2d(46,-17))
                 .build();
         TrajectorySequence toParkRight = drive.trajectorySequenceBuilder(backdropRight.end())
-                .lineTo(new Vector2d(46,18))
+                .lineTo(new Vector2d(46,-17))
                 .build();
 
         Trajectory park = drive.trajectoryBuilder(toParkCenter.end())
@@ -287,14 +272,14 @@ public class BlueRightAuto_YP extends LinearOpMode {
             telemetry.addData("- Size", "%.0f x %.0f", recognition.getWidth(), recognition.getHeight());
 
 
-            if(recognition.getLabel().equals("BlueLeft")){
+            if(recognition.getLabel().equals("RedLeft")){
                 drive.spoolAngleRight.setPosition(.325);
                 drive.followTrajectory(purpleLeft);
                 sleep(50);
                 drive.claw.setPosition(.7);
                 sleep(50);
                 drive.spoolAngleRight.setPosition(-.175);
-                drive.followTrajectory(blueLeftBack);
+                drive.followTrajectory(redLeftBack);
                 sleep(50);
                 drive.followTrajectorySequence(toBackdrop);
                 sleep(50);
@@ -306,14 +291,14 @@ public class BlueRightAuto_YP extends LinearOpMode {
                 drive.followTrajectory(park);
                 sleep(100000000);
 
-            } else if (recognition.getLabel().equals("BlueCenter")){
+            } else if (recognition.getLabel().equals("RedCenter")){
                 drive.spoolAngleRight.setPosition(.325);
                 drive.followTrajectory(purpleCenter);
                 sleep(50);
                 drive.claw.setPosition(.7);
                 sleep(50);
                 drive.spoolAngleRight.setPosition(-.175);
-                drive.followTrajectory(blueCenterBack);
+                drive.followTrajectory(redCenterBack);
                 sleep(50);
                 drive.followTrajectorySequence(toBackdrop);
                 sleep(50);
@@ -323,25 +308,16 @@ public class BlueRightAuto_YP extends LinearOpMode {
                 drive.backPixel.setPosition(0);
                 drive.followTrajectorySequence(toParkCenter);
                 drive.followTrajectory(park);
-//                sleep(50);
-//                drive.followTrajectory(goToWhite);
-//                drive.spoolAngleRight.setPosition(.325);
-//                sleep(1000);
-//                drive.claw.setPosition(.99);
-//                sleep(1000);
-//                drive.spoolAngleRight.setPosition(-.175);
-//                drive.followTrajectory(park);
-
                 sleep(100000000);
 
-            } else if (recognition.getLabel().equals("BlueRight")){
+            } else if (recognition.getLabel().equals("RedRight")){
                 drive.spoolAngleRight.setPosition(.325);
                 drive.followTrajectory(purpleRight);
                 sleep(50);
                 drive.claw.setPosition(.7);
                 sleep(50);
                 drive.spoolAngleRight.setPosition(-.175);
-                drive.followTrajectory(blueRightBack);
+                drive.followTrajectory(redRightBack);
                 sleep(50);
                 drive.followTrajectorySequence(toBackdrop);
                 sleep(50);

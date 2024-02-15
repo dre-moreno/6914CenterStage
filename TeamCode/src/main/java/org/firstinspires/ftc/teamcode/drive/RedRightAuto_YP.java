@@ -53,22 +53,22 @@ import java.util.List;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list.
  */
-@Autonomous(name = "Comp: Blue Right - P&Y", group = "Blue Auto - YP")
-public class BlueRightAuto_YP extends LinearOpMode {
+@Autonomous(name = "Comp: Red Right - P&Y", group = "Red Auto - YP")
+public class RedRightAuto_YP extends LinearOpMode {
 
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
 
     // TFOD_MODEL_ASSET points to a model file stored in the project Asset location,
     // this is only used for Android Studio when using models in Assets.
-    private static final String TFOD_MODEL_ASSET = "blueMarkerV2.tflite";
+    private static final String TFOD_MODEL_ASSET = "redMarkerV2.tflite";
     // TFOD_MODEL_FILE points to a model file stored onboard the Robot Controller's storage,
     // this is used when uploading models directly to the RC using the model upload interface.
-    private static final String TFOD_MODEL_FILE = "/sdcard/FIRST/tflitemodels/blueMarker.tflite";
+    private static final String TFOD_MODEL_FILE = "/sdcard/FIRST/tflitemodels/redMarkerV2.tflite";
     // Define the labels recognized in the model for TFOD (must be in training order!)
     private static final String[] LABELS = {
-            "BlueCenter",
-            "BlueLeft",
-            "BlueRight"
+            "RedCenter",
+            "RedLeft",
+            "RedRight"
     };
 
     /**
@@ -101,7 +101,7 @@ public class BlueRightAuto_YP extends LinearOpMode {
         if (opModeIsActive()) {
             while (opModeIsActive()) {
 
-//                drive.spoolAngleRight.setPosition(.23);
+
                 telemetryTfod();
 
                 // Push telemetry to the Driver Station.
@@ -194,80 +194,45 @@ public class BlueRightAuto_YP extends LinearOpMode {
     private void telemetryTfod() {
 
         Hardware drive = new Hardware(hardwareMap);
+        Pose2d start = new Pose2d(12,-70,Math.PI/2);
+        drive.setPoseEstimate(start);
 
-        drive.setPoseEstimate(new Pose2d(-34,70,3*Math.PI/2));
 
-        //done needs testing - on field
-        Trajectory purpleLeft = drive.trajectoryBuilder(new Pose2d(-34,70,3*Math.PI/2))
-                .splineToLinearHeading(new Pose2d(-37,43,0),0)
+        Trajectory backdropLeft = drive.trajectoryBuilder(start)
+                .lineToLinearHeading(new Pose2d(52,-38,Math.PI))
                 .build();
 
-        //done needs testing - on field
-        Trajectory purpleCenter = drive.trajectoryBuilder(new Pose2d(-34,70,3*Math.PI/2))
-                .lineTo(new Vector2d(-38,45))
+        Trajectory purpleLeft = drive.trajectoryBuilder(backdropLeft.end())
+                .lineTo(new Vector2d(15 ,-40))
                 .build();
 
-        //done needs testing - on field
-        Trajectory purpleRight = drive.trajectoryBuilder(new Pose2d(-34,70,3*Math.PI/2))
-                .lineTo(new Vector2d(-44,55))
+        TrajectorySequence parkLeft = drive.trajectorySequenceBuilder(purpleLeft.end())
+                .lineTo(new Vector2d(50,-69))
+                .back(10)
                 .build();
 
-        //all Blue***Back  done needs testing
-        Trajectory blueLeftBack = drive.trajectoryBuilder(purpleLeft.end())
-                .lineToLinearHeading(new Pose2d(-55,60,3*Math.PI/2))
+        Trajectory backdropCenter = drive.trajectoryBuilder(start)
+                .lineToLinearHeading(new Pose2d(52,-43,Math.PI))
                 .build();
 
-        Trajectory blueCenterBack = drive.trajectoryBuilder(purpleCenter.end())
-                .lineTo(new Vector2d(-55,60))
+        Trajectory purpleCenter = drive.trajectoryBuilder(backdropCenter.end())
+                .lineTo(new Vector2d(30,-33))
+                .build();
+        TrajectorySequence parkCenter = drive.trajectorySequenceBuilder(purpleCenter.end())
+                .lineTo(new Vector2d(50,-69))
+                .back(10)
                 .build();
 
-        Trajectory blueRightBack = drive.trajectoryBuilder(purpleRight.end())
-                .lineTo(new Vector2d(-55,60))
+        Trajectory backdropRight = drive.trajectoryBuilder(start)
+                .lineToLinearHeading(new Pose2d(52,-48,Math.PI))
                 .build();
 
-
-        //done needs testing
-        TrajectorySequence toBackdrop = drive.trajectorySequenceBuilder(new Pose2d(-55,60,3*Math.PI/2))
-                .lineToLinearHeading(new Pose2d(-55,19,3*Math.PI/2))
-                .lineTo(new Vector2d(-49,19))
-                .turn(-Math.PI/2)
-                .back(95)
+        Trajectory purpleRight = drive.trajectoryBuilder(backdropRight.end())
+                .lineTo(new Vector2d(37,-40))
                 .build();
-
-        Trajectory backdropLeft = drive.trajectoryBuilder(toBackdrop.end())
-                .lineToLinearHeading(new Pose2d(52,48,Math.PI))
-                .build();
-
-        Trajectory backdropCenter = drive.trajectoryBuilder(toBackdrop.end())
-                .lineToLinearHeading(new Pose2d(52,42,Math.PI))
-                .build();
-
-
-        Trajectory backdropRight = drive.trajectoryBuilder(toBackdrop.end())
-                .lineToLinearHeading(new Pose2d(52,34,Math.PI))
-                .build();
-
-
-//        TrajectorySequence lineWhiteCenter = drive.trajectorySequenceBuilder(backdropCenter.end())
-//                .lineTo(new Vector2d(46,17))
-//                .build();
-//
-//        Trajectory goToWhite = drive.trajectoryBuilder(lineWhiteCenter.end())
-//                .forward(99)
-//                .build();
-
-        TrajectorySequence toParkCenter = drive.trajectorySequenceBuilder(backdropCenter.end())
-                .lineTo(new Vector2d(46,18))
-                .build();
-        TrajectorySequence toParkLeft = drive.trajectorySequenceBuilder(backdropLeft.end())
-                .lineTo(new Vector2d(46,18))
-                .build();
-        TrajectorySequence toParkRight = drive.trajectorySequenceBuilder(backdropRight.end())
-                .lineTo(new Vector2d(46,18))
-                .build();
-
-        Trajectory park = drive.trajectoryBuilder(toParkCenter.end())
-                .back(15)
+        TrajectorySequence parkRight = drive.trajectorySequenceBuilder(purpleRight.end())
+                .lineTo(new Vector2d(50,-69))
+                .back(10)
                 .build();
 
 
@@ -287,70 +252,51 @@ public class BlueRightAuto_YP extends LinearOpMode {
             telemetry.addData("- Size", "%.0f x %.0f", recognition.getWidth(), recognition.getHeight());
 
 
-            if(recognition.getLabel().equals("BlueLeft")){
+            if(recognition.getLabel().equals("RedLeft")){
+                drive.followTrajectory(backdropLeft);
+                sleep(50);
+                drive.backPixel.setPosition(.5);
+                sleep(2000);
+                drive.backPixel.setPosition(0);
                 drive.spoolAngleRight.setPosition(.325);
                 drive.followTrajectory(purpleLeft);
-                sleep(50);
                 drive.claw.setPosition(.7);
                 sleep(50);
                 drive.spoolAngleRight.setPosition(-.175);
-                drive.followTrajectory(blueLeftBack);
                 sleep(50);
-                drive.followTrajectorySequence(toBackdrop);
+                drive.followTrajectorySequence(parkLeft);
+                sleep(100000000);
+
+            } else if (recognition.getLabel().equals("RedCenter")){
+                drive.followTrajectory(backdropCenter);
                 sleep(50);
-                drive.followTrajectory(backdropLeft);
                 drive.backPixel.setPosition(.5);
                 sleep(2000);
                 drive.backPixel.setPosition(0);
-                drive.followTrajectorySequence(toParkLeft);
-                drive.followTrajectory(park);
-                sleep(100000000);
-
-            } else if (recognition.getLabel().equals("BlueCenter")){
                 drive.spoolAngleRight.setPosition(.325);
                 drive.followTrajectory(purpleCenter);
-                sleep(50);
+                sleep(100);
                 drive.claw.setPosition(.7);
                 sleep(50);
                 drive.spoolAngleRight.setPosition(-.175);
-                drive.followTrajectory(blueCenterBack);
                 sleep(50);
-                drive.followTrajectorySequence(toBackdrop);
-                sleep(50);
-                drive.followTrajectory(backdropCenter);
-                drive.backPixel.setPosition(.5);
-                sleep(2000);
-                drive.backPixel.setPosition(0);
-                drive.followTrajectorySequence(toParkCenter);
-                drive.followTrajectory(park);
-//                sleep(50);
-//                drive.followTrajectory(goToWhite);
-//                drive.spoolAngleRight.setPosition(.325);
-//                sleep(1000);
-//                drive.claw.setPosition(.99);
-//                sleep(1000);
-//                drive.spoolAngleRight.setPosition(-.175);
-//                drive.followTrajectory(park);
-
+                drive.followTrajectorySequence(parkCenter);
                 sleep(100000000);
 
-            } else if (recognition.getLabel().equals("BlueRight")){
-                drive.spoolAngleRight.setPosition(.325);
-                drive.followTrajectory(purpleRight);
-                sleep(50);
-                drive.claw.setPosition(.7);
-                sleep(50);
-                drive.spoolAngleRight.setPosition(-.175);
-                drive.followTrajectory(blueRightBack);
-                sleep(50);
-                drive.followTrajectorySequence(toBackdrop);
-                sleep(50);
+            } else if (recognition.getLabel().equals("RedRight")){
                 drive.followTrajectory(backdropRight);
+                sleep(50);
                 drive.backPixel.setPosition(.5);
                 sleep(2000);
                 drive.backPixel.setPosition(0);
-                drive.followTrajectorySequence(toParkRight);
-                drive.followTrajectory(park);
+                drive.spoolAngleRight.setPosition(.325);
+                drive.followTrajectory(purpleRight);
+                sleep(100);
+                drive.claw.setPosition(.7);
+                sleep(50);
+                drive.spoolAngleRight.setPosition(-.175);
+                sleep(50);
+                drive.followTrajectorySequence(parkRight);
                 sleep(100000000);
 
             }

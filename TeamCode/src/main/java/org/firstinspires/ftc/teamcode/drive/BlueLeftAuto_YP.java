@@ -53,7 +53,7 @@ import java.util.List;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list.
  */
-@Autonomous(name = "Comp: Blue Left - P&Y", group = "Blue Auto")
+@Autonomous(name = "Comp: Blue Left - P&Y", group = "Blue Auto - YP")
 public class BlueLeftAuto_YP extends LinearOpMode {
 
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
@@ -197,16 +197,6 @@ public class BlueLeftAuto_YP extends LinearOpMode {
 
         drive.setPoseEstimate(new Pose2d(12,70,3*Math.PI/2));
 
-
-//        //test
-//        Trajectory blueCenterP = drive.trajectoryBuilder(new Pose2d(12,70,3*Math.PI/2))
-//                .lineTo(new Vector2d(16,45))
-//                .build();
-//
-//        //test
-//        Trajectory blueRightP = drive.trajectoryBuilder(new Pose2d(12,70,3*Math.PI/2))
-//                .splineToLinearHeading(new Pose2d(14,41,Math.PI),Math.PI)
-//                .build();
 
         Trajectory backdropLeft = drive.trajectoryBuilder(new Pose2d(12,70,3*Math.PI/2))
                 .lineToLinearHeading(new Pose2d(52,48,Math.PI))
