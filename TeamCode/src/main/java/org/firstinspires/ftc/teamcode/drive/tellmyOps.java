@@ -107,6 +107,7 @@ public class tellmyOps extends LinearOpMode {
             telemetry.addData("y", poseEstimate.getY());
             telemetry.addData("heading", poseEstimate.getHeading());
             telemetry.addData("color detected: ", drive.yellowDetector.argb());
+            telemetry .addData("claw angle: " , drive.spoolAngleRight.getPosition());
             telemetry.update();
         }
     }

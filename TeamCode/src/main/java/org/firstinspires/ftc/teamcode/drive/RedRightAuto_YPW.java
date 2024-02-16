@@ -96,6 +96,7 @@ public class RedRightAuto_YPW extends LinearOpMode {
         Hardware drive = new Hardware(hardwareMap);
         drive.claw.setPosition(1);
         drive.backPixel.setPosition(0);
+        drive.spoolAngleRight.setPosition(0);
         waitForStart();
 
         if (opModeIsActive()) {
@@ -208,7 +209,7 @@ public class RedRightAuto_YPW extends LinearOpMode {
 
 
         Trajectory backdropCenter = drive.trajectoryBuilder(start)
-                .lineToLinearHeading(new Pose2d(52,-43,Math.PI))
+                .lineToLinearHeading(new Pose2d(52,-44,Math.PI))
                 .build();
 
         Trajectory purpleCenter = drive.trajectoryBuilder(backdropCenter.end())
@@ -226,24 +227,24 @@ public class RedRightAuto_YPW extends LinearOpMode {
 
         //white collection
         Trajectory lineWhiteLeft = drive.trajectoryBuilder(purpleLeft.end())
-                .lineTo(new Vector2d(46,-17))
+                .lineTo(new Vector2d(46,-19))
                 .build();
         Trajectory lineWhiteCenter = drive.trajectoryBuilder(purpleCenter.end())
-                .lineTo(new Vector2d(46,-17))
+                .lineTo(new Vector2d(46,-19))
                 .build();
         Trajectory lineWhiteRight = drive.trajectoryBuilder(purpleRight.end())
-                .lineTo(new Vector2d(46,-17))
+                .lineTo(new Vector2d(46,-19))
                 .build();
 
         Trajectory goToWhite = drive.trajectoryBuilder(lineWhiteCenter.end())
-                .forward(99)
+                .lineTo(new Vector2d(-52,-19))
                 .build();
 
 
         TrajectorySequence park = drive.trajectorySequenceBuilder(goToWhite.end())
                 .back(99)
                 .lineToLinearHeading(new Pose2d(50,-69,0))
-                .forward(5)
+                .forward(3)
                 .build();
 
 
@@ -273,16 +274,16 @@ public class RedRightAuto_YPW extends LinearOpMode {
                 drive.followTrajectory(purpleLeft);
                 drive.claw.setPosition(.7);
                 sleep(50);
-                drive.spoolAngleRight.setPosition(-.175);
+                drive.spoolAngleRight.setPosition(0);
                 sleep(50);
               //white collection
                 drive.followTrajectory(lineWhiteRight);
                 drive.followTrajectory(goToWhite);
-                drive.spoolAngleRight.setPosition(.23);
+                drive.spoolAngleRight.setPosition(.25);
                 sleep(1000);
                 drive.claw.setPosition(.99);
                 sleep(1000);
-                drive.spoolAngleRight.setPosition(-.175);
+                drive.spoolAngleRight.setPosition(0);
                 drive.followTrajectorySequence(park);
                 drive.spoolAngleRight.setPosition(.325);
                 sleep(100);
@@ -301,16 +302,16 @@ public class RedRightAuto_YPW extends LinearOpMode {
                 sleep(100);
                 drive.claw.setPosition(.7);
                 sleep(50);
-                drive.spoolAngleRight.setPosition(-.175);
+                drive.spoolAngleRight.setPosition(0);
                 sleep(50);
                 //white colleciton
                 drive.followTrajectory(lineWhiteRight);
                 drive.followTrajectory(goToWhite);
-                drive.spoolAngleRight.setPosition(.23);
+                drive.spoolAngleRight.setPosition(.25);
                 sleep(1000);
                 drive.claw.setPosition(.99);
                 sleep(1000);
-                drive.spoolAngleRight.setPosition(-.175);
+                drive.spoolAngleRight.setPosition(0);
                 drive.followTrajectorySequence(park);
                 drive.spoolAngleRight.setPosition(.325);
                 sleep(100);
@@ -329,16 +330,16 @@ public class RedRightAuto_YPW extends LinearOpMode {
                 sleep(100);
                 drive.claw.setPosition(.7);
                 sleep(50);
-                drive.spoolAngleRight.setPosition(-.175);
+                drive.spoolAngleRight.setPosition(0);
                 sleep(50);
                 //white collection
                 drive.followTrajectory(lineWhiteRight);
                 drive.followTrajectory(goToWhite);
-                drive.spoolAngleRight.setPosition(.23);
+                drive.spoolAngleRight.setPosition(.25);
                 sleep(1000);
                 drive.claw.setPosition(.99);
                 sleep(1000);
-                drive.spoolAngleRight.setPosition(-.175);
+                drive.spoolAngleRight.setPosition(0);
                 drive.followTrajectorySequence(park);
                 drive.spoolAngleRight.setPosition(.325);
                 sleep(100);

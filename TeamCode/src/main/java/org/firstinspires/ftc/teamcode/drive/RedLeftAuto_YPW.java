@@ -252,12 +252,13 @@ public class RedLeftAuto_YPW extends LinearOpMode {
                 .build();
 
         Trajectory goToWhite = drive.trajectoryBuilder(lineWhiteCenter.end())
-                .forward(99)
+                .lineTo(new Vector2d(-53,-21))
                 .build();
 
-
-        Trajectory park = drive.trajectoryBuilder(goToWhite.end())
+        TrajectorySequence park = drive.trajectorySequenceBuilder(goToWhite.end())
+                .lineTo(new Vector2d(20,-19))
                 .lineToLinearHeading(new Pose2d(51,-19,0))
+
                 .build();
 
 
@@ -295,12 +296,12 @@ public class RedLeftAuto_YPW extends LinearOpMode {
                 drive.followTrajectory(lineWhiteLeft);
                 sleep(50);
                 drive.followTrajectory(goToWhite);
-                drive.spoolAngleRight.setPosition(.23);
+                drive.spoolAngleRight.setPosition(.25);
                 sleep(1000);
                 drive.claw.setPosition(.99);
                 sleep(1000);
                 drive.spoolAngleRight.setPosition(-.175);
-                drive.followTrajectory(park);
+                drive.followTrajectorySequence(park);
                 drive.spoolAngleRight.setPosition(.325);
                 sleep(100);
                 drive.claw.setPosition(.7);
@@ -327,12 +328,12 @@ public class RedLeftAuto_YPW extends LinearOpMode {
                 drive.followTrajectory(lineWhiteCenter);
                 sleep(50);
                 drive.followTrajectory(goToWhite);
-                drive.spoolAngleRight.setPosition(.23);
+                drive.spoolAngleRight.setPosition(.25);
                 sleep(1000);
                 drive.claw.setPosition(.99);
                 sleep(1000);
                 drive.spoolAngleRight.setPosition(-.175);
-                drive.followTrajectory(park);
+                drive.followTrajectorySequence(park);
                 drive.spoolAngleRight.setPosition(.325);
                 sleep(100);
                 drive.claw.setPosition(.7);
@@ -359,12 +360,12 @@ public class RedLeftAuto_YPW extends LinearOpMode {
                 drive.followTrajectory(lineWhiteRight);
                 sleep(50);
                 drive.followTrajectory(goToWhite);
-                drive.spoolAngleRight.setPosition(.23);
+                drive.spoolAngleRight.setPosition(.25);
                 sleep(1000);
                 drive.claw.setPosition(.99);
                 sleep(1000);
                 drive.spoolAngleRight.setPosition(-.175);
-                drive.followTrajectory(park);
+                drive.followTrajectorySequence(park);
                 drive.spoolAngleRight.setPosition(.325);
                 sleep(100);
                 drive.claw.setPosition(.7);
