@@ -63,7 +63,7 @@ public class BlueRightAuto_YP extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "blueMarkerV2.tflite";
     // TFOD_MODEL_FILE points to a model file stored onboard the Robot Controller's storage,
     // this is used when uploading models directly to the RC using the model upload interface.
-    private static final String TFOD_MODEL_FILE = "/sdcard/FIRST/tflitemodels/blueMarker.tflite";
+    private static final String TFOD_MODEL_FILE = "/sdcard/FIRST/tflitemodels/blueMarkerV2.tflite";
     // Define the labels recognized in the model for TFOD (must be in training order!)
     private static final String[] LABELS = {
             "BlueCenter",
@@ -248,14 +248,6 @@ public class BlueRightAuto_YP extends LinearOpMode {
                 .build();
 
 
-//        TrajectorySequence lineWhiteCenter = drive.trajectorySequenceBuilder(backdropCenter.end())
-//                .lineTo(new Vector2d(46,17))
-//                .build();
-//
-//        Trajectory goToWhite = drive.trajectoryBuilder(lineWhiteCenter.end())
-//                .forward(99)
-//                .build();
-
         TrajectorySequence toParkCenter = drive.trajectorySequenceBuilder(backdropCenter.end())
                 .lineTo(new Vector2d(46,18))
                 .build();
@@ -323,15 +315,6 @@ public class BlueRightAuto_YP extends LinearOpMode {
                 drive.backPixel.setPosition(0);
                 drive.followTrajectorySequence(toParkCenter);
                 drive.followTrajectory(park);
-//                sleep(50);
-//                drive.followTrajectory(goToWhite);
-//                drive.spoolAngleRight.setPosition(.325);
-//                sleep(1000);
-//                drive.claw.setPosition(.99);
-//                sleep(1000);
-//                drive.spoolAngleRight.setPosition(-.175);
-//                drive.followTrajectory(park);
-
                 sleep(100000000);
 
             } else if (recognition.getLabel().equals("BlueRight")){
