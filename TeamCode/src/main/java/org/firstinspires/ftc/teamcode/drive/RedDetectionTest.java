@@ -81,14 +81,14 @@ public class RedDetectionTest extends LinearOpMode {
         private Location location;
 
         static final Rect LEFTBOX = new Rect(
-                new Point(1,1),
-                new Point(2,2));
+                new Point(100,130),
+                new Point(250,395));
         static final Rect CENTERBOX = new Rect(
-                new Point(1,1),
-                new Point(2,2));
+                new Point(830,25),
+                new Point(980,300));
         static final Rect RIGHTBOX = new Rect(
-                new Point(1,1),
-                new Point(2,2));
+                new Point(1400,175),
+                new Point(1550,450));
 
         public PropDetector(Telemetry t){ telemetry = t;}
 
