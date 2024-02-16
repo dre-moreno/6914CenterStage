@@ -53,22 +53,22 @@ import java.util.List;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list.
  */
-@Autonomous(name = "Comp: Blue Left - P&Y", group = "Blue Auto - YP")
-public class BlueLeftAuto_YP extends LinearOpMode {
+@Autonomous(name = "Comp: Red Right - P&Y", group = "Red Auto - YP")
+public class RedRightAuto_YP extends LinearOpMode {
 
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
 
     // TFOD_MODEL_ASSET points to a model file stored in the project Asset location,
     // this is only used for Android Studio when using models in Assets.
-    private static final String TFOD_MODEL_ASSET = "blueMarkerV2.tflite";
+    private static final String TFOD_MODEL_ASSET = "redMarkerV2.tflite";
     // TFOD_MODEL_FILE points to a model file stored onboard the Robot Controller's storage,
     // this is used when uploading models directly to the RC using the model upload interface.
-    private static final String TFOD_MODEL_FILE = "/sdcard/FIRST/tflitemodels/blueMarker.tflite";
+    private static final String TFOD_MODEL_FILE = "/sdcard/FIRST/tflitemodels/redMarkerV2.tflite";
     // Define the labels recognized in the model for TFOD (must be in training order!)
     private static final String[] LABELS = {
-            "BlueCenter",
-            "BlueLeft",
-            "BlueRight"
+            "RedCenter",
+            "RedLeft",
+            "RedRight"
     };
 
     /**
@@ -194,44 +194,44 @@ public class BlueLeftAuto_YP extends LinearOpMode {
     private void telemetryTfod() {
 
         Hardware drive = new Hardware(hardwareMap);
+        Pose2d start = new Pose2d(12,-70,Math.PI/2);
+        drive.setPoseEstimate(start);
 
-        drive.setPoseEstimate(new Pose2d(12,70,3*Math.PI/2));
 
-
-        Trajectory backdropLeft = drive.trajectoryBuilder(new Pose2d(12,70,3*Math.PI/2))
-                .lineToLinearHeading(new Pose2d(52,48,Math.PI))
+        Trajectory backdropLeft = drive.trajectoryBuilder(start)
+                .lineToLinearHeading(new Pose2d(52,-38,Math.PI))
                 .build();
 
         Trajectory purpleLeft = drive.trajectoryBuilder(backdropLeft.end())
-                .lineTo(new Vector2d(37 ,40))
+                .lineTo(new Vector2d(15 ,-40))
                 .build();
 
         TrajectorySequence parkLeft = drive.trajectorySequenceBuilder(purpleLeft.end())
-                .lineTo(new Vector2d(50,69))
+                .lineTo(new Vector2d(50,-69))
                 .back(10)
                 .build();
 
-        Trajectory backdropCenter = drive.trajectoryBuilder(new Pose2d(12,70,3*Math.PI/2))
-                .lineToLinearHeading(new Pose2d(52,43,Math.PI))
+        Trajectory backdropCenter = drive.trajectoryBuilder(start)
+                .lineToLinearHeading(new Pose2d(52,-43,Math.PI))
                 .build();
 
         Trajectory purpleCenter = drive.trajectoryBuilder(backdropCenter.end())
-                .lineTo(new Vector2d(30,30))
+                .lineTo(new Vector2d(30,-33))
                 .build();
         TrajectorySequence parkCenter = drive.trajectorySequenceBuilder(purpleCenter.end())
-                .lineTo(new Vector2d(50,69))
+                .lineTo(new Vector2d(50,-69))
                 .back(10)
                 .build();
 
-        Trajectory backdropRight = drive.trajectoryBuilder(new Pose2d(12,70,3*Math.PI/2))
-                .lineToLinearHeading(new Pose2d(52,34,Math.PI))
+        Trajectory backdropRight = drive.trajectoryBuilder(start)
+                .lineToLinearHeading(new Pose2d(52,-48,Math.PI))
                 .build();
 
         Trajectory purpleRight = drive.trajectoryBuilder(backdropRight.end())
-                .lineTo(new Vector2d(15,40))
+                .lineTo(new Vector2d(37,-40))
                 .build();
         TrajectorySequence parkRight = drive.trajectorySequenceBuilder(purpleRight.end())
-                .lineTo(new Vector2d(50,69))
+                .lineTo(new Vector2d(50,-69))
                 .back(10)
                 .build();
 
@@ -252,7 +252,7 @@ public class BlueLeftAuto_YP extends LinearOpMode {
             telemetry.addData("- Size", "%.0f x %.0f", recognition.getWidth(), recognition.getHeight());
 
 
-            if(recognition.getLabel().equals("BlueLeft")){
+            if(recognition.getLabel().equals("RedLeft")){
                 drive.followTrajectory(backdropLeft);
                 sleep(50);
                 drive.backPixel.setPosition(.5);
@@ -267,7 +267,7 @@ public class BlueLeftAuto_YP extends LinearOpMode {
                 drive.followTrajectorySequence(parkLeft);
                 sleep(100000000);
 
-            } else if (recognition.getLabel().equals("BlueCenter")){
+            } else if (recognition.getLabel().equals("RedCenter")){
                 drive.followTrajectory(backdropCenter);
                 sleep(50);
                 drive.backPixel.setPosition(.5);
@@ -283,7 +283,7 @@ public class BlueLeftAuto_YP extends LinearOpMode {
                 drive.followTrajectorySequence(parkCenter);
                 sleep(100000000);
 
-            } else if (recognition.getLabel().equals("BlueRight")){
+            } else if (recognition.getLabel().equals("RedRight")){
                 drive.followTrajectory(backdropRight);
                 sleep(50);
                 drive.backPixel.setPosition(.5);

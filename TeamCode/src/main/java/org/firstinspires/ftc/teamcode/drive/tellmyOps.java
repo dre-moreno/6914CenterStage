@@ -42,7 +42,7 @@ public class tellmyOps extends LinearOpMode {
                 drive.claw.setPosition(.7);
 
             } else {
-                drive.claw.setPosition(.95);
+                drive.claw.setPosition(.98);
             }
 
             //hangarms
@@ -106,8 +106,7 @@ public class tellmyOps extends LinearOpMode {
             telemetry.addData("x", poseEstimate.getX());
             telemetry.addData("y", poseEstimate.getY());
             telemetry.addData("heading", poseEstimate.getHeading());
-            telemetry.addData("left_stick",gamepad2.left_stick_x);
-            telemetry.addData("servo pos", drive.backPixel.getPosition());
+            telemetry.addData("color detected: ", drive.yellowDetector.argb());
             telemetry.update();
         }
     }
