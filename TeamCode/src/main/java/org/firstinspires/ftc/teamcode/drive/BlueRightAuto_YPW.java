@@ -302,7 +302,8 @@ public class BlueRightAuto_YPW extends LinearOpMode {
                 drive.backPixel.setPosition(.5);
                 sleep(2000);
                 drive.backPixel.setPosition(0);
-
+                sleep(50);
+                //white collection
                 drive.followTrajectory(lineWhiteLeft);
                 sleep(50);
                 drive.followTrajectory(goToWhite);
@@ -312,6 +313,9 @@ public class BlueRightAuto_YPW extends LinearOpMode {
                 sleep(1000);
                 drive.spoolAngleRight.setPosition(-.175);
                 drive.followTrajectory(park);
+                drive.spoolAngleRight.setPosition(.325);
+                sleep(100);
+                drive.claw.setPosition(.7);
 
                 sleep(100000000);
 
@@ -331,7 +335,8 @@ public class BlueRightAuto_YPW extends LinearOpMode {
                 drive.backPixel.setPosition(.5);
                 sleep(2000);
                 drive.backPixel.setPosition(0);
-
+                sleep(50);
+                //white collection
                 drive.followTrajectory(lineWhiteCenter);
                 sleep(50);
                 drive.followTrajectory(goToWhite);
@@ -341,6 +346,9 @@ public class BlueRightAuto_YPW extends LinearOpMode {
                 sleep(1000);
                 drive.spoolAngleRight.setPosition(-.175);
                 drive.followTrajectory(park);
+                drive.spoolAngleRight.setPosition(.325);
+                sleep(100);
+                drive.claw.setPosition(.7);
 
                 sleep(100000000);
 
@@ -360,7 +368,8 @@ public class BlueRightAuto_YPW extends LinearOpMode {
                 drive.backPixel.setPosition(.5);
                 sleep(2000);
                 drive.backPixel.setPosition(0);
-
+                sleep(50);
+                // white collection
                 drive.followTrajectory(lineWhiteRight);
                 sleep(50);
                 drive.followTrajectory(goToWhite);
@@ -370,6 +379,9 @@ public class BlueRightAuto_YPW extends LinearOpMode {
                 sleep(1000);
                 drive.spoolAngleRight.setPosition(-.175);
                 drive.followTrajectory(park);
+                drive.spoolAngleRight.setPosition(.325);
+                sleep(100);
+                drive.claw.setPosition(.7);
 
                 sleep(100000000);
 

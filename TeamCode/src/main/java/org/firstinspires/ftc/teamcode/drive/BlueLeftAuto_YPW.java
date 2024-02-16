@@ -207,7 +207,7 @@ public class BlueLeftAuto_YPW extends LinearOpMode {
                 .build();
 
         Trajectory lineWhiteLeft = drive.trajectoryBuilder(purpleLeft.end())
-                .lineTo(new Vector2d(40,17))
+                .lineTo(new Vector2d(46,17))
                 .build();
 
 
@@ -221,7 +221,7 @@ public class BlueLeftAuto_YPW extends LinearOpMode {
                 .build();
 
         Trajectory lineWhiteCenter = drive.trajectoryBuilder(purpleCenter.end())
-                .lineTo(new Vector2d(40,17))
+                .lineTo(new Vector2d(46,17))
                 .build();
 
 
@@ -243,7 +243,7 @@ public class BlueLeftAuto_YPW extends LinearOpMode {
                 .forward(99)
                 .build();
 
-        Trajectory park = drive.trajectoryBuilder(goToWhite.end())
+        TrajectorySequence park = drive.trajectorySequenceBuilder(goToWhite.end())
                 .back(99)
                 .lineToLinearHeading(new Pose2d(50,69,0))
                 .forward(5)
@@ -287,7 +287,7 @@ public class BlueLeftAuto_YPW extends LinearOpMode {
                 drive.claw.setPosition(.99);
                 sleep(1000);
                 drive.spoolAngleRight.setPosition(-.175);
-                drive.followTrajectory(park);
+                drive.followTrajectorySequence(park);
                 drive.spoolAngleRight.setPosition(.325);
                 sleep(100);
                 drive.claw.setPosition(.7);
@@ -313,7 +313,7 @@ public class BlueLeftAuto_YPW extends LinearOpMode {
                 drive.claw.setPosition(.99);
                 sleep(1000);
                 drive.spoolAngleRight.setPosition(-.175);
-                drive.followTrajectory(park);
+                drive.followTrajectorySequence(park);
                 drive.spoolAngleRight.setPosition(.325);
                 sleep(100);
                 drive.claw.setPosition(.7);
@@ -339,7 +339,7 @@ public class BlueLeftAuto_YPW extends LinearOpMode {
                 drive.claw.setPosition(.99);
                 sleep(1000);
                 drive.spoolAngleRight.setPosition(-.175);
-                drive.followTrajectory(park);
+                drive.followTrajectorySequence(park);
                 drive.spoolAngleRight.setPosition(.325);
                 sleep(100);
                 drive.claw.setPosition(.7);
