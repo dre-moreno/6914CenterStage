@@ -60,7 +60,7 @@ public class BlueLeftAuto_YP_NewDetect extends LinearOpMode {
                 .build();
 
         Trajectory backdropRight = drive.trajectoryBuilder(new Pose2d(12,70,3*Math.PI/2))
-                .lineToLinearHeading(new Pose2d(52,34,Math.PI))
+                .lineToLinearHeading(new Pose2d(52,35,Math.PI))
                 .build();
 
         Trajectory purpleRight = drive.trajectoryBuilder(backdropRight.end())
@@ -76,7 +76,7 @@ public class BlueLeftAuto_YP_NewDetect extends LinearOpMode {
 
         webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class,"Webcam 1"), cameraMonitorViewId);
 
-        BlueDetectionTest.PropDetector detector = new BlueDetectionTest.PropDetector(telemetry);
+        PropDetector detector = new PropDetector(telemetry);
 
         webcam.setPipeline(detector);
 
@@ -152,7 +152,7 @@ public class BlueLeftAuto_YP_NewDetect extends LinearOpMode {
 
 
 
-    public static class PropDetector extends OpenCvPipeline {
+    public static class PropDetector extends OpenCvPipeline{
         Telemetry telemetry;
         Mat mat = new Mat();
 
@@ -161,8 +161,7 @@ public class BlueLeftAuto_YP_NewDetect extends LinearOpMode {
             CENTER,
             RIGHT
         }
-
-        private BlueDetectionTest.PropDetector.Location location;
+        private Location location;
 
         static final Rect LEFTBOX = new Rect(
                 new Point(100,130),
@@ -181,8 +180,8 @@ public class BlueLeftAuto_YP_NewDetect extends LinearOpMode {
             Imgproc.cvtColor(input,mat,Imgproc.COLOR_RGB2HSV);
 
             //range of blue
-            Scalar lowHSV = new Scalar(230,100,20);
-            Scalar highHSV = new Scalar(240,255,255);
+            Scalar lowHSV = new Scalar(105,100,20);
+            Scalar highHSV = new Scalar(135,255,255);
 
             //only displays blue pixels
             Core.inRange(mat,lowHSV,highHSV,mat);
@@ -214,15 +213,15 @@ public class BlueLeftAuto_YP_NewDetect extends LinearOpMode {
 
             if(max == avgL){
                 //on Left
-                location = BlueDetectionTest.PropDetector.Location.LEFT;
+                location = Location.LEFT;
                 telemetry.addData("Prop Location: ", "LEFT");
             } else if(max == avgC){
                 //on Center
-                location = BlueDetectionTest.PropDetector.Location.CENTER;
+                location = Location.CENTER;
                 telemetry.addData("Prop Location: ", "CENTER");
             }else {
                 //on Right
-                location = BlueDetectionTest.PropDetector.Location.RIGHT;
+                location = Location.RIGHT;
                 telemetry.addData("Prop Location: ", "RIGHT");
             }
 
@@ -234,16 +233,17 @@ public class BlueLeftAuto_YP_NewDetect extends LinearOpMode {
             Scalar found = new Scalar(0, 255, 0);
 
 
-            Imgproc.rectangle(mat,LEFTBOX,location == BlueDetectionTest.PropDetector.Location.LEFT? found:edge, max == avgL? -1:2);
-            Imgproc.rectangle(mat,CENTERBOX,location == BlueDetectionTest.PropDetector.Location.CENTER? found:edge,max == avgC? -1:2);
-            Imgproc.rectangle(mat,RIGHTBOX,location == BlueDetectionTest.PropDetector.Location.RIGHT? found:edge,max == avgR? -1:2);
+            Imgproc.rectangle(mat,LEFTBOX,location == Location.LEFT? found:edge, max == avgL? -1:2);
+            Imgproc.rectangle(mat,CENTERBOX,location == Location.CENTER? found:edge,max == avgC? -1:2);
+            Imgproc.rectangle(mat,RIGHTBOX,location == Location.RIGHT? found:edge,max == avgR? -1:2);
 
 
             return mat;
         }
-        public BlueDetectionTest.PropDetector.Location getLocation(){
+        public Location getLocation(){
             return location;
         }
 
     }
+
 }

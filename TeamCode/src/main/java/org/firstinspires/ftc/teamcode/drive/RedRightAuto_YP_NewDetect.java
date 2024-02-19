@@ -36,7 +36,7 @@ public class RedRightAuto_YP_NewDetect extends LinearOpMode {
 
 
         Trajectory backdropLeft = drive.trajectoryBuilder(start)
-                .lineToLinearHeading(new Pose2d(52,-38,Math.PI))
+                .lineToLinearHeading(new Pose2d(50,-38,Math.PI))
                 .build();
 
         Trajectory purpleLeft = drive.trajectoryBuilder(backdropLeft.end())
@@ -49,7 +49,7 @@ public class RedRightAuto_YP_NewDetect extends LinearOpMode {
                 .build();
 
         Trajectory backdropCenter = drive.trajectoryBuilder(start)
-                .lineToLinearHeading(new Pose2d(52,-43,Math.PI))
+                .lineToLinearHeading(new Pose2d(52,-42.5,Math.PI))
                 .build();
 
         Trajectory purpleCenter = drive.trajectoryBuilder(backdropCenter.end())
@@ -182,8 +182,8 @@ public class RedRightAuto_YP_NewDetect extends LinearOpMode {
             Imgproc.cvtColor(input,mat,Imgproc.COLOR_RGB2HSV);
 
             //range of red
-            Scalar lowHSV = new Scalar(0,100,20);
-            Scalar highHSV = new Scalar(10,255,255);
+            Scalar lowHSV = new Scalar(100,100,20);
+            Scalar highHSV = new Scalar(180,255,255);
 
             //only displays red pixels
             Core.inRange(mat,lowHSV,highHSV,mat);

@@ -97,8 +97,8 @@ public class RedDetectionTest extends LinearOpMode {
             Imgproc.cvtColor(input,mat,Imgproc.COLOR_RGB2HSV);
 
             //range of red
-            Scalar lowHSV = new Scalar(0,100,20);
-            Scalar highHSV = new Scalar(10,255,255);
+            Scalar lowHSV = new Scalar(100,100,20);
+            Scalar highHSV = new Scalar(180,255,255);
 
             //only displays red pixels
             Core.inRange(mat,lowHSV,highHSV,mat);

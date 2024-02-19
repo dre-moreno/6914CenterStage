@@ -5,7 +5,6 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -22,8 +21,8 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvPipeline;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-@Autonomous(name = "Comp: Red Right - P&Y&W - New Detect", group = "Red Auto - YPW - New Detect")
-public class RedRightAuto_YPW_NewDetect extends LinearOpMode {
+@Autonomous(name = "Comp: Blue Left - P&Y&W - New Detect", group = "Blue Auto - YPW - New Detect")
+public class BlueLeftAuto_YPW_NewDetect extends LinearOpMode {
 
     OpenCvWebcam webcam;
 
@@ -31,55 +30,66 @@ public class RedRightAuto_YPW_NewDetect extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
         Hardware drive = new Hardware(hardwareMap);
-        Pose2d start = new Pose2d(12,-70,Math.PI/2);
-        drive.setPoseEstimate(start);
+
+        drive.setPoseEstimate(new Pose2d(12,70,3*Math.PI/2));
 
 
-        Trajectory backdropLeft = drive.trajectoryBuilder(start)
-                .lineToLinearHeading(new Pose2d(52,-38.5,Math.PI))
+        Trajectory backdropLeft = drive.trajectoryBuilder(new Pose2d(12,70,3*Math.PI/2))
+                .lineToLinearHeading(new Pose2d(52,48,Math.PI))
                 .build();
 
         Trajectory purpleLeft = drive.trajectoryBuilder(backdropLeft.end())
-                .lineTo(new Vector2d(15 ,-40))
+                .lineTo(new Vector2d(37 ,40))
                 .build();
 
+//        TrajectorySequence parkLeft = drive.trajectorySequenceBuilder(purpleLeft.end())
+//                .lineTo(new Vector2d(50,69))
+//                .back(10)
+//                .build();
 
-        Trajectory backdropCenter = drive.trajectoryBuilder(start)
-                .lineToLinearHeading(new Pose2d(51.5,-44,Math.PI))
+        Trajectory backdropCenter = drive.trajectoryBuilder(new Pose2d(12,70,3*Math.PI/2))
+                .lineToLinearHeading(new Pose2d(52,43,Math.PI))
                 .build();
 
         Trajectory purpleCenter = drive.trajectoryBuilder(backdropCenter.end())
-                .lineTo(new Vector2d(30,-33))
+                .lineTo(new Vector2d(30,30))
                 .build();
+//        TrajectorySequence parkCenter = drive.trajectorySequenceBuilder(purpleCenter.end())
+//                .lineTo(new Vector2d(50,69))
+//                .back(10)
+//                .build();
 
-
-        Trajectory backdropRight = drive.trajectoryBuilder(start)
-                .lineToLinearHeading(new Pose2d(51.5,-50,Math.PI))
+        Trajectory backdropRight = drive.trajectoryBuilder(new Pose2d(12,70,3*Math.PI/2))
+                .lineToLinearHeading(new Pose2d(52,35,Math.PI))
                 .build();
 
         Trajectory purpleRight = drive.trajectoryBuilder(backdropRight.end())
-                .lineTo(new Vector2d(37,-40))
+                .lineTo(new Vector2d(15,40))
                 .build();
+//        TrajectorySequence parkRight = drive.trajectorySequenceBuilder(purpleRight.end())
+//                .lineTo(new Vector2d(50,69))
+//                .back(10)
+//                .build();
 
         //white collection
         Trajectory lineWhiteLeft = drive.trajectoryBuilder(purpleLeft.end())
-                .lineTo(new Vector2d(46,-19))
+                .lineTo(new Vector2d(46,19))
                 .build();
         Trajectory lineWhiteCenter = drive.trajectoryBuilder(purpleCenter.end())
-                .lineTo(new Vector2d(46,-19))
+                .lineTo(new Vector2d(46,19))
                 .build();
         Trajectory lineWhiteRight = drive.trajectoryBuilder(purpleRight.end())
-                .lineTo(new Vector2d(46,-19))
+                .lineTo(new Vector2d(46,19))
                 .build();
 
         Trajectory goToWhite = drive.trajectoryBuilder(lineWhiteCenter.end())
-                .lineTo(new Vector2d(-52,-19))
+                .lineTo(new Vector2d(-52,19))
                 .build();
 
 
         TrajectorySequence park = drive.trajectorySequenceBuilder(goToWhite.end())
                 .back(99)
-                .lineToLinearHeading(new Pose2d(50,-69,0))
+                .lineToLinearHeading(new Pose2d(50,69,0))
                 .forward(2)
                 .build();
 
@@ -95,7 +105,7 @@ public class RedRightAuto_YPW_NewDetect extends LinearOpMode {
         webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
-                webcam.startStreaming(1920,1080,OpenCvCameraRotation.UPRIGHT);
+                webcam.startStreaming(1920,1080, OpenCvCameraRotation.UPRIGHT);
             }
             @Override
             public void onError(int errorCode) {
@@ -118,11 +128,11 @@ public class RedRightAuto_YPW_NewDetect extends LinearOpMode {
                 drive.spoolAngleRight.setPosition(.325);
                 drive.followTrajectory(purpleLeft);
                 drive.claw.setPosition(.7);
-                sleep(100);
-                drive.spoolAngleRight.setPosition(0);
+                sleep(50);
+                drive.spoolAngleRight.setPosition(-.175);
                 sleep(50);
                 //white collection
-                drive.followTrajectory(lineWhiteRight);
+                drive.followTrajectory(lineWhiteLeft);
                 drive.followTrajectory(goToWhite);
                 drive.spoolAngleRight.setPosition(.25);
                 sleep(1000);
@@ -133,7 +143,6 @@ public class RedRightAuto_YPW_NewDetect extends LinearOpMode {
                 drive.spoolAngleRight.setPosition(.325);
                 sleep(100);
                 drive.claw.setPosition(.7);
-
                 sleep(100000000);
                 break;
             case CENTER:
@@ -146,11 +155,11 @@ public class RedRightAuto_YPW_NewDetect extends LinearOpMode {
                 drive.followTrajectory(purpleCenter);
                 sleep(100);
                 drive.claw.setPosition(.7);
-                sleep(100);
-                drive.spoolAngleRight.setPosition(0);
                 sleep(50);
-                //white colleciton
-                drive.followTrajectory(lineWhiteRight);
+                drive.spoolAngleRight.setPosition(-.175);
+                sleep(50);
+                //white collection
+                drive.followTrajectory(lineWhiteCenter);
                 drive.followTrajectory(goToWhite);
                 drive.spoolAngleRight.setPosition(.25);
                 sleep(1000);
@@ -161,7 +170,6 @@ public class RedRightAuto_YPW_NewDetect extends LinearOpMode {
                 drive.spoolAngleRight.setPosition(.325);
                 sleep(100);
                 drive.claw.setPosition(.7);
-
                 sleep(100000000);
                 break;
             case RIGHT:
@@ -174,8 +182,8 @@ public class RedRightAuto_YPW_NewDetect extends LinearOpMode {
                 drive.followTrajectory(purpleRight);
                 sleep(100);
                 drive.claw.setPosition(.7);
-                sleep(100);
-                drive.spoolAngleRight.setPosition(0);
+                sleep(50);
+                drive.spoolAngleRight.setPosition(-.175);
                 sleep(50);
                 //white collection
                 drive.followTrajectory(lineWhiteRight);
@@ -189,7 +197,6 @@ public class RedRightAuto_YPW_NewDetect extends LinearOpMode {
                 drive.spoolAngleRight.setPosition(.325);
                 sleep(100);
                 drive.claw.setPosition(.7);
-
                 sleep(100000000);
                 break;
         }
@@ -209,7 +216,6 @@ public class RedRightAuto_YPW_NewDetect extends LinearOpMode {
             CENTER,
             RIGHT
         }
-
         private Location location;
 
         static final Rect LEFTBOX = new Rect(
@@ -228,14 +234,14 @@ public class RedRightAuto_YPW_NewDetect extends LinearOpMode {
         public Mat processFrame(Mat input){
             Imgproc.cvtColor(input,mat,Imgproc.COLOR_RGB2HSV);
 
-            //range of red
-            Scalar lowHSV = new Scalar(100,100,20);
-            Scalar highHSV = new Scalar(180,255,255);
+            //range of blue
+            Scalar lowHSV = new Scalar(105,100,20);
+            Scalar highHSV = new Scalar(135,255,255);
 
-            //only displays red pixels
+            //only displays blue pixels
             Core.inRange(mat,lowHSV,highHSV,mat);
 
-            //creates boxes for red detection
+            //creates boxes for blue detection
             Mat left = mat.submat(LEFTBOX);
             Mat center = mat.submat(CENTERBOX);
             Mat right = mat.submat(RIGHTBOX);

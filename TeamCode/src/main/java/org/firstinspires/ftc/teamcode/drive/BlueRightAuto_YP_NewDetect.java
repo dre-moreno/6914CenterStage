@@ -70,16 +70,16 @@ public class BlueRightAuto_YP_NewDetect extends LinearOpMode {
                 .build();
 
         Trajectory backdropLeft = drive.trajectoryBuilder(toBackdrop.end())
-                .lineToLinearHeading(new Pose2d(52,48,Math.PI))
+                .lineToLinearHeading(new Pose2d(50,48,Math.PI))
                 .build();
 
         Trajectory backdropCenter = drive.trajectoryBuilder(toBackdrop.end())
-                .lineToLinearHeading(new Pose2d(52,42,Math.PI))
+                .lineToLinearHeading(new Pose2d(50,42,Math.PI))
                 .build();
 
 
         Trajectory backdropRight = drive.trajectoryBuilder(toBackdrop.end())
-                .lineToLinearHeading(new Pose2d(52,34,Math.PI))
+                .lineToLinearHeading(new Pose2d(50,34,Math.PI))
                 .build();
 
 
@@ -102,7 +102,7 @@ public class BlueRightAuto_YP_NewDetect extends LinearOpMode {
 
         webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class,"Webcam 1"), cameraMonitorViewId);
 
-        BlueDetectionTest.PropDetector detector = new BlueDetectionTest.PropDetector(telemetry);
+       PropDetector detector = new PropDetector(telemetry);
 
         webcam.setPipeline(detector);
 
@@ -128,7 +128,7 @@ public class BlueRightAuto_YP_NewDetect extends LinearOpMode {
                 drive.followTrajectory(purpleLeft);
                 sleep(50);
                 drive.claw.setPosition(.7);
-                sleep(50);
+                sleep(150);
                 drive.spoolAngleRight.setPosition(-.175);
                 drive.followTrajectory(blueLeftBack);
                 sleep(50);
@@ -147,7 +147,7 @@ public class BlueRightAuto_YP_NewDetect extends LinearOpMode {
                 drive.followTrajectory(purpleCenter);
                 sleep(50);
                 drive.claw.setPosition(.7);
-                sleep(50);
+                sleep(150);
                 drive.spoolAngleRight.setPosition(-.175);
                 drive.followTrajectory(blueCenterBack);
                 sleep(50);
@@ -166,7 +166,7 @@ public class BlueRightAuto_YP_NewDetect extends LinearOpMode {
                 drive.followTrajectory(purpleRight);
                 sleep(50);
                 drive.claw.setPosition(.7);
-                sleep(50);
+                sleep(150);
                 drive.spoolAngleRight.setPosition(-.175);
                 drive.followTrajectory(blueRightBack);
                 sleep(50);
@@ -198,7 +198,7 @@ public class BlueRightAuto_YP_NewDetect extends LinearOpMode {
             RIGHT
         }
 
-        private BlueDetectionTest.PropDetector.Location location;
+        private Location location;
 
         static final Rect LEFTBOX = new Rect(
                 new Point(100,130),
@@ -217,8 +217,8 @@ public class BlueRightAuto_YP_NewDetect extends LinearOpMode {
             Imgproc.cvtColor(input,mat,Imgproc.COLOR_RGB2HSV);
 
             //range of blue
-            Scalar lowHSV = new Scalar(230,100,20);
-            Scalar highHSV = new Scalar(240,255,255);
+            Scalar lowHSV = new Scalar(105,100,20);
+            Scalar highHSV = new Scalar(135,255,255);
 
             //only displays blue pixels
             Core.inRange(mat,lowHSV,highHSV,mat);
@@ -250,15 +250,15 @@ public class BlueRightAuto_YP_NewDetect extends LinearOpMode {
 
             if(max == avgL){
                 //on Left
-                location = BlueDetectionTest.PropDetector.Location.LEFT;
+                location = Location.LEFT;
                 telemetry.addData("Prop Location: ", "LEFT");
             } else if(max == avgC){
                 //on Center
-                location = BlueDetectionTest.PropDetector.Location.CENTER;
+                location = Location.CENTER;
                 telemetry.addData("Prop Location: ", "CENTER");
             }else {
                 //on Right
-                location = BlueDetectionTest.PropDetector.Location.RIGHT;
+                location = Location.RIGHT;
                 telemetry.addData("Prop Location: ", "RIGHT");
             }
 
@@ -270,14 +270,14 @@ public class BlueRightAuto_YP_NewDetect extends LinearOpMode {
             Scalar found = new Scalar(0, 255, 0);
 
 
-            Imgproc.rectangle(mat,LEFTBOX,location == BlueDetectionTest.PropDetector.Location.LEFT? found:edge, max == avgL? -1:2);
-            Imgproc.rectangle(mat,CENTERBOX,location == BlueDetectionTest.PropDetector.Location.CENTER? found:edge,max == avgC? -1:2);
-            Imgproc.rectangle(mat,RIGHTBOX,location == BlueDetectionTest.PropDetector.Location.RIGHT? found:edge,max == avgR? -1:2);
+            Imgproc.rectangle(mat,LEFTBOX,location == Location.LEFT? found:edge, max == avgL? -1:2);
+            Imgproc.rectangle(mat,CENTERBOX,location == Location.CENTER? found:edge,max == avgC? -1:2);
+            Imgproc.rectangle(mat,RIGHTBOX,location == Location.RIGHT? found:edge,max == avgR? -1:2);
 
 
             return mat;
         }
-        public BlueDetectionTest.PropDetector.Location getLocation(){
+        public Location getLocation(){
             return location;
         }
 

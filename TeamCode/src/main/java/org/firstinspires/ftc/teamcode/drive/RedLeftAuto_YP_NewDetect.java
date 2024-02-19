@@ -65,16 +65,16 @@ public class RedLeftAuto_YP_NewDetect extends LinearOpMode {
                 .build();
 
         Trajectory backdropLeft = drive.trajectoryBuilder(toBackdrop.end())
-                .lineToLinearHeading(new Pose2d(51.5,-35,Math.PI))
+                .lineToLinearHeading(new Pose2d(50,-38,Math.PI))
                 .build();
 
         Trajectory backdropCenter = drive.trajectoryBuilder(toBackdrop.end())
-                .lineToLinearHeading(new Pose2d(51.5,-42,Math.PI))
+                .lineToLinearHeading(new Pose2d(50,-42.5,Math.PI))
                 .build();
 
 
         Trajectory backdropRight = drive.trajectoryBuilder(toBackdrop.end())
-                .lineToLinearHeading(new Pose2d(51.5,-48,Math.PI))
+                .lineToLinearHeading(new Pose2d(50,-48,Math.PI))
                 .build();
 
 
@@ -98,7 +98,7 @@ public class RedLeftAuto_YP_NewDetect extends LinearOpMode {
 
         webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class,"Webcam 1"), cameraMonitorViewId);
 
-        RedDetectionTest.PropDetector detector = new RedDetectionTest.PropDetector(telemetry);
+        PropDetector detector = new PropDetector(telemetry);
 
         webcam.setPipeline(detector);
 
@@ -124,7 +124,7 @@ public class RedLeftAuto_YP_NewDetect extends LinearOpMode {
                 drive.followTrajectory(purpleLeft);
                 sleep(50);
                 drive.claw.setPosition(.7);
-                sleep(50);
+                sleep(150);
                 drive.spoolAngleRight.setPosition(-.175);
                 drive.followTrajectory(redLeftBack);
                 sleep(50);
@@ -141,9 +141,9 @@ public class RedLeftAuto_YP_NewDetect extends LinearOpMode {
             case CENTER:
                 drive.spoolAngleRight.setPosition(.325);
                 drive.followTrajectory(purpleCenter);
-                sleep(50);
+                sleep(100);
                 drive.claw.setPosition(.7);
-                sleep(50);
+                sleep(150);
                 drive.spoolAngleRight.setPosition(-.175);
                 drive.followTrajectory(redCenterBack);
                 sleep(50);
@@ -160,9 +160,9 @@ public class RedLeftAuto_YP_NewDetect extends LinearOpMode {
             case RIGHT:
                 drive.spoolAngleRight.setPosition(.325);
                 drive.followTrajectory(purpleRight);
-                sleep(50);
+                sleep(100);
                 drive.claw.setPosition(.7);
-                sleep(50);
+                sleep(150);
                 drive.spoolAngleRight.setPosition(-.175);
                 drive.followTrajectory(redRightBack);
                 sleep(50);
@@ -194,14 +194,14 @@ public class RedLeftAuto_YP_NewDetect extends LinearOpMode {
             RIGHT
         }
 
-        private RedDetectionTest.PropDetector.Location location;
+        private PropDetector.Location location;
 
         static final Rect LEFTBOX = new Rect(
                 new Point(100,130),
                 new Point(250,395));
         static final Rect CENTERBOX = new Rect(
-                new Point(830,25),
-                new Point(980,300));
+                new Point(730,25),
+                new Point(880,300));
         static final Rect RIGHTBOX = new Rect(
                 new Point(1400,175),
                 new Point(1550,450));
@@ -213,8 +213,8 @@ public class RedLeftAuto_YP_NewDetect extends LinearOpMode {
             Imgproc.cvtColor(input,mat,Imgproc.COLOR_RGB2HSV);
 
             //range of red
-            Scalar lowHSV = new Scalar(0,100,20);
-            Scalar highHSV = new Scalar(10,255,255);
+            Scalar lowHSV = new Scalar(100,100,20);
+            Scalar highHSV = new Scalar(180,255,255);
 
             //only displays red pixels
             Core.inRange(mat,lowHSV,highHSV,mat);
@@ -246,15 +246,15 @@ public class RedLeftAuto_YP_NewDetect extends LinearOpMode {
 
             if(max == avgL){
                 //on Left
-                location = RedDetectionTest.PropDetector.Location.LEFT;
+                location = Location.LEFT;
                 telemetry.addData("Prop Location: ", "LEFT");
             } else if(max == avgC){
                 //on Center
-                location = RedDetectionTest.PropDetector.Location.CENTER;
+                location = Location.CENTER;
                 telemetry.addData("Prop Location: ", "CENTER");
             }else {
                 //on Right
-                location = RedDetectionTest.PropDetector.Location.RIGHT;
+                location = Location.RIGHT;
                 telemetry.addData("Prop Location: ", "RIGHT");
             }
 
@@ -266,14 +266,14 @@ public class RedLeftAuto_YP_NewDetect extends LinearOpMode {
             Scalar found = new Scalar(0, 255, 0);
 
 
-            Imgproc.rectangle(mat,LEFTBOX,location == RedDetectionTest.PropDetector.Location.LEFT? found:edge, max == avgL? -1:2);
-            Imgproc.rectangle(mat,CENTERBOX,location == RedDetectionTest.PropDetector.Location.CENTER? found:edge,max == avgC? -1:2);
-            Imgproc.rectangle(mat,RIGHTBOX,location == RedDetectionTest.PropDetector.Location.RIGHT? found:edge,max == avgR? -1:2);
+            Imgproc.rectangle(mat,LEFTBOX,location == Location.LEFT? found:edge, max == avgL? -1:2);
+            Imgproc.rectangle(mat,CENTERBOX,location == Location.CENTER? found:edge,max == avgC? -1:2);
+            Imgproc.rectangle(mat,RIGHTBOX,location == Location.RIGHT? found:edge,max == avgR? -1:2);
 
 
             return mat;
         }
-        public RedDetectionTest.PropDetector.Location getLocation(){
+        public Location getLocation(){
             return location;
         }
 

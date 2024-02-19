@@ -20,6 +20,7 @@ import org.openftc.easyopencv.OpenCvWebcam;
 @TeleOp(name = "BlueDetectionTest-HSV")
 public class BlueDetectionTest extends LinearOpMode {
 
+
     OpenCvWebcam webcam;
 
     @Override
@@ -97,13 +98,13 @@ public class BlueDetectionTest extends LinearOpMode {
             Imgproc.cvtColor(input,mat,Imgproc.COLOR_RGB2HSV);
 
             //range of blue
-            Scalar lowHSV = new Scalar(230,100,20);
-            Scalar highHSV = new Scalar(240,255,255);
+            Scalar lowHSV = new Scalar(105,100,20);
+            Scalar highHSV = new Scalar(135,255,255);
 
             //only displays blue pixels
             Core.inRange(mat,lowHSV,highHSV,mat);
 
-            //creates boxes for blue detection
+            //creates boxes for red detection
             Mat left = mat.submat(LEFTBOX);
             Mat center = mat.submat(CENTERBOX);
             Mat right = mat.submat(RIGHTBOX);
