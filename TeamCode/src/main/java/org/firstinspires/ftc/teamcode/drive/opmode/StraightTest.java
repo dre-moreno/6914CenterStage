@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.drive.Hardware;
+import org.firstinspires.ftc.teamcode.drive.Hardware6914;
 
 /*
  * This is a simple routine to test translational drive capabilities.
@@ -28,7 +28,7 @@ public class StraightTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         Telemetry telemetry = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        Hardware drive = new Hardware(hardwareMap);
+        Hardware6914 drive = new Hardware6914(hardwareMap);
 
         Trajectory trajectory = drive.trajectoryBuilder(new Pose2d())
                 .forward(DISTANCE)

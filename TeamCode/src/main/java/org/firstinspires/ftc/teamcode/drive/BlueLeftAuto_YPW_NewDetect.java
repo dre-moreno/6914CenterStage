@@ -29,7 +29,7 @@ public class BlueLeftAuto_YPW_NewDetect extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        Hardware drive = new Hardware(hardwareMap);
+        Hardware6914 drive = new Hardware6914(hardwareMap);
 
         drive.setPoseEstimate(new Pose2d(12,70,3*Math.PI/2));
 

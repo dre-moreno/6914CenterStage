@@ -17,7 +17,7 @@ import com.qualcomm.robotcore.util.WebHandlerManager;
 import org.firstinspires.ftc.ftccommon.external.WebHandlerRegistrar;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
-import org.firstinspires.ftc.teamcode.drive.Hardware;
+import org.firstinspires.ftc.teamcode.drive.Hardware6914;
 import org.firstinspires.ftc.teamcode.drive.StandardTrackingWheelLocalizer;
 
 import java.io.File;
@@ -65,13 +65,13 @@ public final class LogFiles {
         public double maxAngVel = DriveConstants.MAX_ANG_VEL;
         public double maxAngAccel = DriveConstants.MAX_ANG_ACCEL;
 
-        public double mecTransP = Hardware.TRANSLATIONAL_PID.kP;
-        public double mecTransI = Hardware.TRANSLATIONAL_PID.kI;
-        public double mecTransD = Hardware.TRANSLATIONAL_PID.kD;
-        public double mecHeadingP = Hardware.HEADING_PID.kP;
-        public double mecHeadingI = Hardware.HEADING_PID.kI;
-        public double mecHeadingD = Hardware.HEADING_PID.kD;
-        public double mecLateralMultiplier = Hardware.LATERAL_MULTIPLIER;
+        public double mecTransP = Hardware6914.TRANSLATIONAL_PID.kP;
+        public double mecTransI = Hardware6914.TRANSLATIONAL_PID.kI;
+        public double mecTransD = Hardware6914.TRANSLATIONAL_PID.kD;
+        public double mecHeadingP = Hardware6914.HEADING_PID.kP;
+        public double mecHeadingI = Hardware6914.HEADING_PID.kI;
+        public double mecHeadingD = Hardware6914.HEADING_PID.kD;
+        public double mecLateralMultiplier = Hardware6914.LATERAL_MULTIPLIER;
 
 
 

@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.drive.Hardware;
+import org.firstinspires.ftc.teamcode.drive.Hardware6914;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 /*
@@ -30,7 +30,7 @@ public class FollowerPIDTuner extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        Hardware drive = new Hardware(hardwareMap);
+        Hardware6914 drive = new Hardware6914(hardwareMap);
 
         Pose2d startPose = new Pose2d(-DISTANCE / 2, -DISTANCE / 2, 0);
 

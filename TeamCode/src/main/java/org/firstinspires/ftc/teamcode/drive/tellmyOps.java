@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.drive;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -10,7 +11,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 public class tellmyOps extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        Hardware drive = new Hardware(hardwareMap);
+        Hardware6914 drive = new Hardware6914(hardwareMap);
 
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
@@ -30,15 +31,15 @@ public class tellmyOps extends LinearOpMode {
 
             //spool
             //stick to the left is out; stick to the right is in
-            if(gamepad2.right_trigger > 0) {
+            if (gamepad2.right_trigger > 0) {
                 drive.spoolOut.setPower(-gamepad2.right_trigger);
                 drive.spoolIn.setPower(-gamepad2.right_trigger * .25);
-            } else if (gamepad2.left_trigger >= 0){
+            } else if (gamepad2.left_trigger >= 0) {
                 drive.spoolOut.setPower(gamepad2.left_trigger * .8);
                 drive.spoolIn.setPower(gamepad2.left_trigger);
             }
 
-            if(gamepad2.a){
+            if (gamepad2.a) {
                 drive.claw.setPosition(.7);
 
             } else {
@@ -48,37 +49,46 @@ public class tellmyOps extends LinearOpMode {
             //hangarms
             //always down hold to raise
 
-              if (gamepad1.right_trigger > 0){
-                drive.hangLeft.setPower(gamepad1.right_trigger*.8);
-                drive.hangRight.setPower(-gamepad1.right_trigger*.8);
+            if (gamepad1.right_trigger > 0) {
+                drive.hangLeft.setPower(gamepad1.right_trigger * .8);
+                drive.hangRight.setPower(-gamepad1.right_trigger * .8);
             } else {
                 drive.hangLeft.setPower(0);
                 drive.hangRight.setPower(0);
             }
 
-            if(gamepad1.left_bumper) {
-                drive.planeShooter.setPower(-1);
-            } else {
-                drive.planeShooter.setPower(0);
-            }
-
-            if(gamepad1.b){
-                drive.planeShooter.setPower(1);
-            }
-            drive.spoolAngleLeft.setPosition(-gamepad2.left_stick_y/2+.325);
-            drive.spoolAngleRight.setPosition(gamepad2.left_stick_y/2+.325);
-
-
-//            drive.backPixel.setPosition(.5 + gamepad2.left_stick_x/2);
-     //       drive.backPixel.setPosition(gamepad2.left_stick_x/2);
+//            if (gamepad1.left_bumper) {
+//                drive.planeShooter.setPower(-1);
+//            } else {
+//                drive.planeShooter.setPower(0);
+//            }
+//
+//            if (gamepad1.b) {
+//                drive.planeShooter.setPower(1);
+//            }
+            //drive.spoolAngleLeft.setPosition(-gamepad2.left_stick_y / 2 + .325);
+            drive.spoolAngleRight.setPosition(gamepad2.left_stick_y / 2 + .325);
 
 
-            if(gamepad1.dpad_up){
+            Trajectory strafeYellow = drive.trajectoryBuilder(new Pose2d(0,0,0))
+                    .strafeLeft(5)
+                    .build();
+
+//            if(drive.yellowDetector.red() > 200 && drive.yellowDetector.green() > 200){
+//                drive.followTrajectory(strafeYellow);
+//                sleep(50);
+//                drive.backPixel.setPosition(.5);
+//            } else {
+//                drive.backPixel.setPosition(.5);
+//            }
+
+
+            if (gamepad1.dpad_up) {
                 drive.hangLeft.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
                 drive.hangRight.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
 
-                drive.hangLeft.setTargetPosition(-(int)(rotation*4.5));
-                drive.hangRight.setTargetPosition((int)(rotation*4.5));
+                drive.hangLeft.setTargetPosition(-(int) (rotation * 4.5));
+                drive.hangRight.setTargetPosition((int) (rotation * 4.5));
 
                 drive.hangLeft.setPower(.5);
                 drive.hangRight.setPower(.5);
@@ -86,7 +96,7 @@ public class tellmyOps extends LinearOpMode {
                 drive.hangLeft.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                 drive.hangRight.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
 
-                while(drive.hangLeft.isBusy() && drive.hangRight.isBusy()){
+                while (drive.hangLeft.isBusy() && drive.hangRight.isBusy()) {
                     //just prints while the lift is going up.
                     telemetry.addData("Status", "Lift Arms Rasing");
                     telemetry.update();
@@ -106,8 +116,9 @@ public class tellmyOps extends LinearOpMode {
             telemetry.addData("x", poseEstimate.getX());
             telemetry.addData("y", poseEstimate.getY());
             telemetry.addData("heading", poseEstimate.getHeading());
-            telemetry.addData("color detected: ", drive.yellowDetector.argb());
-            telemetry .addData("claw angle: " , drive.spoolAngleRight.getPosition());
+           // telemetry.addData("color detected: ", drive.yellowDetector.argb());
+            telemetry.addData("claw angle: ", drive.spoolAngleRight.getPosition());
+            telemetry.addData("claw pos: ", drive.claw.getPosition()) ;
             telemetry.update();
         }
     }

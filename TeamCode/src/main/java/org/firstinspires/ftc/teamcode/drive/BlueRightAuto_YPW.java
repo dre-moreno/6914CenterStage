@@ -93,7 +93,7 @@ public class BlueRightAuto_YPW extends LinearOpMode {
         telemetry.update();
 
 
-        Hardware drive = new Hardware(hardwareMap);
+        Hardware6914 drive = new Hardware6914(hardwareMap);
         drive.claw.setPosition(1);
         drive.backPixel.setPosition(0);
         waitForStart();
@@ -193,7 +193,7 @@ public class BlueRightAuto_YPW extends LinearOpMode {
      */
     private void telemetryTfod() {
 
-        Hardware drive = new Hardware(hardwareMap);
+        Hardware6914 drive = new Hardware6914(hardwareMap);
 
         drive.setPoseEstimate(new Pose2d(-34,70,3*Math.PI/2));
 

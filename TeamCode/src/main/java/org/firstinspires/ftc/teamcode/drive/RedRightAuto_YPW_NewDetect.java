@@ -5,7 +5,6 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -30,7 +29,7 @@ public class RedRightAuto_YPW_NewDetect extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        Hardware drive = new Hardware(hardwareMap);
+        Hardware6914 drive = new Hardware6914(hardwareMap);
         Pose2d start = new Pose2d(12,-70,Math.PI/2);
         drive.setPoseEstimate(start);
 

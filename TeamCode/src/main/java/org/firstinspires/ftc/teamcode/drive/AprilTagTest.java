@@ -47,9 +47,6 @@ public class AprilTagTest extends LinearOpMode {
 
 
 
-        Trajectory placeYellow = drive.trajectoryBuilder(drive.getPoseEstimate())
-                .lineToLinearHeading(new Pose2d(12,drive.getPoseEstimate().getY(),Math.PI))
-                .build();
 
         Trajectory backdrop = drive.trajectoryBuilder(new Pose2d(12,70,3*Math.PI/2))
                 .lineToLinearHeading(new Pose2d(40,43,Math.PI))
@@ -65,12 +62,10 @@ public class AprilTagTest extends LinearOpMode {
                     sleep(1000);
                     AprilTagDetection tag = tagProcessor.getDetections().get(0);
 
-//                    while(tag.ftcPose.x > 4.5 || tag.ftcPose.x < 2.5) {
-//                        telemetry.addData("id",tag.id);
-//                        telemetry.update();
-//                        drive.strafeRight(.15);
-//                    }
-                            drive.noPower();
+                   Trajectory placeYellow = drive.trajectoryBuilder(backdrop.end())
+                .lineToLinearHeading(new Pose2d(12,drive.getPoseEstimate().getY()+tag.ftcPose.x,Math.PI))
+                           .back(12)
+                .build();
                             sleep(500);
                             drive.updatePoseEstimate();
                             sleep(500);

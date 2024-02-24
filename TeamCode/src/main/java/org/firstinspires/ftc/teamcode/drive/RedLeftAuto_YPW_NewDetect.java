@@ -29,7 +29,7 @@ public class RedLeftAuto_YPW_NewDetect extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        Hardware drive = new Hardware(hardwareMap);
+        Hardware6914 drive = new Hardware6914(hardwareMap);
 
         drive.setPoseEstimate(new Pose2d(-34,-70,Math.PI/2));
 
@@ -258,8 +258,8 @@ public class RedLeftAuto_YPW_NewDetect extends LinearOpMode {
             Imgproc.cvtColor(input,mat,Imgproc.COLOR_RGB2HSV);
 
             //range of red
-            Scalar lowHSV = new Scalar(0,100,20);
-            Scalar highHSV = new Scalar(10,255,255);
+            Scalar lowHSV = new Scalar(100,100,20);
+            Scalar highHSV = new Scalar(180,255,255);
 
             //only displays red pixels
             Core.inRange(mat,lowHSV,highHSV,mat);

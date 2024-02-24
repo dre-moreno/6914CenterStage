@@ -19,8 +19,6 @@ import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAcceleration
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -32,7 +30,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
@@ -58,7 +55,7 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
  * Simple mecanum drive hardware implementation for REV hardware.
  */
 @Config
-public class Hardware extends MecanumDrive {
+public class Hardware6914 extends MecanumDrive {
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(8, 0, 0);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(8, 0, 0);
 
@@ -89,7 +86,7 @@ public class Hardware extends MecanumDrive {
     private List<Integer> lastEncPositions = new ArrayList<>();
     private List<Integer> lastEncVels = new ArrayList<>();
 
-    public Hardware(HardwareMap hardwareMap) {
+    public Hardware6914(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
@@ -119,13 +116,13 @@ public class Hardware extends MecanumDrive {
         hangRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
-        planeShooter = hardwareMap.get(CRServo.class, "planeShooter");
-        spoolAngleLeft = hardwareMap.get(Servo.class, "spoolAngleLeft");
+       // planeShooter = hardwareMap.get(CRServo.class, "planeShooter");
+        //spoolAngleLeft = hardwareMap.get(Servo.class, "spoolAngleLeft");
         spoolAngleRight = hardwareMap.get(Servo.class, "spoolAngleRight");
         claw = hardwareMap.get(Servo.class, "claw");
         backPixel = hardwareMap.get(Servo.class, "backPixel");
 
-        yellowDetector = hardwareMap.get(RevColorSensorV3.class,"yellowDetector");
+       // yellowDetector = hardwareMap.get(RevColorSensorV3.class,"yellowDetector");
 
 
 
@@ -168,6 +165,27 @@ public class Hardware extends MecanumDrive {
                 follower, HEADING_PID, batteryVoltageSensor,
                 lastEncPositions, lastEncVels, lastTrackingEncPositions, lastTrackingEncVels
         );
+
+    }
+
+    public void strafeLeft(double power){
+        FL.setPower(-power);
+        FR.setPower(power);
+        BL.setPower(power);
+        BR.setPower(-power);
+    }
+
+    public void strafeRight(double power){
+        FL.setPower(power);
+        FR.setPower(-power);
+        BL.setPower(-power);
+        BR.setPower(power);
+    }
+    public void noPower(){
+        FL.setPower(0);
+        FR.setPower(0);
+        BL.setPower(0);
+        BR.setPower(0);
     }
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
