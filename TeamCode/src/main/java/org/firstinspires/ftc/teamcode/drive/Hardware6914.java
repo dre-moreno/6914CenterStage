@@ -18,6 +18,7 @@ import com.acmerobotics.roadrunner.trajectory.constraints.ProfileAccelerationCon
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -75,9 +76,10 @@ public class Hardware6914 extends MecanumDrive {
 
     public Servo spoolAngleLeft, spoolAngleRight, claw,backPixel;
 
+
+
     public CRServo planeShooter;
 
-    public RevColorSensorV3 yellowDetector;
     private List<DcMotorEx> motors;
 
     private IMU imu;

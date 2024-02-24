@@ -121,7 +121,7 @@ public class RedRightAuto_YPW_NewDetect extends LinearOpMode {
                 drive.spoolAngleRight.setPosition(0);
                 sleep(50);
                 //white collection
-                drive.followTrajectory(lineWhiteRight);
+                drive.followTrajectory(lineWhiteLeft);
                 drive.followTrajectory(goToWhite);
                 drive.spoolAngleRight.setPosition(.25);
                 sleep(1000);
@@ -149,7 +149,7 @@ public class RedRightAuto_YPW_NewDetect extends LinearOpMode {
                 drive.spoolAngleRight.setPosition(0);
                 sleep(50);
                 //white colleciton
-                drive.followTrajectory(lineWhiteRight);
+                drive.followTrajectory(lineWhiteCenter);
                 drive.followTrajectory(goToWhite);
                 drive.spoolAngleRight.setPosition(.25);
                 sleep(1000);
@@ -277,7 +277,9 @@ public class RedRightAuto_YPW_NewDetect extends LinearOpMode {
 
             Imgproc.cvtColor(mat,mat,Imgproc.COLOR_GRAY2RGB);
 
+            //blue
             Scalar edge = new Scalar(0, 0, 255);
+            //green
             Scalar found = new Scalar(0, 255, 0);
 
 
