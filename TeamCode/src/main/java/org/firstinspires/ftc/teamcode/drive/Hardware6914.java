@@ -170,26 +170,6 @@ public class Hardware6914 extends MecanumDrive {
 
     }
 
-    public void strafeLeft(double power){
-        FL.setPower(-power);
-        FR.setPower(power);
-        BL.setPower(power);
-        BR.setPower(-power);
-    }
-
-    public void strafeRight(double power){
-        FL.setPower(power);
-        FR.setPower(-power);
-        BL.setPower(-power);
-        BR.setPower(power);
-    }
-    public void noPower(){
-        FL.setPower(0);
-        FR.setPower(0);
-        BL.setPower(0);
-        BR.setPower(0);
-    }
-
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
         return new TrajectoryBuilder(startPose, VEL_CONSTRAINT, ACCEL_CONSTRAINT);
     }

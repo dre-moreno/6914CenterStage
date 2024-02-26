@@ -60,7 +60,7 @@ public class AprilTagTest extends LinearOpMode {
                 hardwareMap.appContext.getPackageName());
 
 
-        webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class,"Webcam 2"), cameraMonitorViewId);
+        webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class,"Webcam 3"), cameraMonitorViewId);
 
         YellowDetector detector = new YellowDetector(telemetry);
 
@@ -103,7 +103,6 @@ public class AprilTagTest extends LinearOpMode {
                     sleep(500);
 
             drive.followTrajectory(lineYellow);
-
 
                     switch(detector.getLocation()){
 
@@ -162,14 +161,14 @@ public class AprilTagTest extends LinearOpMode {
         public Mat processFrame(Mat input){
             Imgproc.cvtColor(input,mat,Imgproc.COLOR_RGB2HSV);
 
-            //range of blue
+            //range of yellow
             Scalar lowHSV = new Scalar(20, 100, 100);
             Scalar highHSV = new Scalar(30, 255, 255);
 
-            //only displays blue pixels
+            //only displays yellow pixels
             Core.inRange(mat,lowHSV,highHSV,mat);
 
-            //creates boxes for blue detection
+            //creates boxes for yellow detection
             Mat left = mat.submat(LEFTBOX);
 
             double avgL = Core.mean(left).val[0];
