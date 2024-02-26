@@ -21,8 +21,8 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvPipeline;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-@Autonomous(name = "Comp: Red Right - P&Y - New Detect", group = "Red Auto - YP - New Detect")
-public class RedRightAuto_YP_NewDetect extends LinearOpMode {
+@Autonomous(name = "Comp: Red Right - P&Y", group = "Red Auto - YP")
+public class RedRightAuto_YP extends LinearOpMode {
 
     OpenCvWebcam webcam;
 

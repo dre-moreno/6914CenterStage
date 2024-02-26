@@ -20,89 +20,85 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvPipeline;
 import org.openftc.easyopencv.OpenCvWebcam;
-@Autonomous(name = "Comp: Blue Right P&Y - New Detect", group = "Blue Auto - YP - New Detect")
-public class BlueRightAuto_YP_NewDetect extends LinearOpMode {
+
+@Autonomous(name = "Comp: Red Left P&Y", group = "Red Auto - YP")
+public class RedLeftAuto_YP extends LinearOpMode {
 
     OpenCvWebcam webcam;
 
     @Override
     public void runOpMode() throws InterruptedException {
-
         Hardware6914 drive = new Hardware6914(hardwareMap);
 
-        drive.setPoseEstimate(new Pose2d(-34,70,3*Math.PI/2));
+        drive.setPoseEstimate(new Pose2d(-34,-70,Math.PI/2));
 
-        //done needs testing - on field
-        Trajectory purpleLeft = drive.trajectoryBuilder(new Pose2d(-34,70,3*Math.PI/2))
-                .splineToLinearHeading(new Pose2d(-37,43,0),0)
+        Trajectory purpleLeft = drive.trajectoryBuilder(new Pose2d(-34,-70,Math.PI/2))
+                .lineTo(new Vector2d(-44,-55))
                 .build();
 
-        //done needs testing - on field
-        Trajectory purpleCenter = drive.trajectoryBuilder(new Pose2d(-34,70,3*Math.PI/2))
-                .lineTo(new Vector2d(-38,45))
+        Trajectory purpleCenter = drive.trajectoryBuilder(new Pose2d(-34,-70,Math.PI/2))
+                .lineTo(new Vector2d(-38,-45))
                 .build();
 
-        //done needs testing - on field
-        Trajectory purpleRight = drive.trajectoryBuilder(new Pose2d(-34,70,3*Math.PI/2))
-                .lineTo(new Vector2d(-44,55))
-                .build();
-
-        //all Blue***Back  done needs testing
-        Trajectory blueLeftBack = drive.trajectoryBuilder(purpleLeft.end())
-                .lineToLinearHeading(new Pose2d(-55,60,3*Math.PI/2))
-                .build();
-
-        Trajectory blueCenterBack = drive.trajectoryBuilder(purpleCenter.end())
-                .lineTo(new Vector2d(-55,60))
-                .build();
-
-        Trajectory blueRightBack = drive.trajectoryBuilder(purpleRight.end())
-                .lineTo(new Vector2d(-55,60))
+        Trajectory purpleRight = drive.trajectoryBuilder(new Pose2d(-34,-70,Math.PI/2))
+                .splineToLinearHeading(new Pose2d(-38,-40,0),Math.PI/2)
                 .build();
 
 
-        //done needs testing
-        TrajectorySequence toBackdrop = drive.trajectorySequenceBuilder(new Pose2d(-55,60,3*Math.PI/2))
-                .lineToLinearHeading(new Pose2d(-55,19,3*Math.PI/2))
-                .lineTo(new Vector2d(-49,19))
-                .turn(-Math.PI/2)
+        Trajectory redLeftBack = drive.trajectoryBuilder(purpleLeft.end())
+                .lineTo(new Vector2d(-55,-60))
+                .build();
+
+        Trajectory redCenterBack = drive.trajectoryBuilder(purpleCenter.end())
+                .lineTo(new Vector2d(-55,-60))
+                .build();
+
+        Trajectory redRightBack = drive.trajectoryBuilder(purpleRight.end())
+                .lineToLinearHeading(new Pose2d(-55,-60,Math.PI/2))
+                .build();
+
+        TrajectorySequence toBackdrop = drive.trajectorySequenceBuilder(new Pose2d(-55,-60,Math.PI/2))
+                .lineToLinearHeading(new Pose2d(-55,-15,Math.PI/2))
+                .lineTo(new Vector2d(-49,-15))
+                .turn(Math.PI/2)
                 .back(95)
                 .build();
 
         Trajectory backdropLeft = drive.trajectoryBuilder(toBackdrop.end())
-                .lineToLinearHeading(new Pose2d(50,48,Math.PI))
+                .lineToLinearHeading(new Pose2d(50,-38,Math.PI))
                 .build();
 
         Trajectory backdropCenter = drive.trajectoryBuilder(toBackdrop.end())
-                .lineToLinearHeading(new Pose2d(50,42,Math.PI))
+                .lineToLinearHeading(new Pose2d(50,-42.5,Math.PI))
                 .build();
 
 
         Trajectory backdropRight = drive.trajectoryBuilder(toBackdrop.end())
-                .lineToLinearHeading(new Pose2d(50,34,Math.PI))
+                .lineToLinearHeading(new Pose2d(50,-48,Math.PI))
                 .build();
 
 
         TrajectorySequence toParkCenter = drive.trajectorySequenceBuilder(backdropCenter.end())
-                .lineTo(new Vector2d(46,18))
+                .lineTo(new Vector2d(46,-17))
                 .build();
         TrajectorySequence toParkLeft = drive.trajectorySequenceBuilder(backdropLeft.end())
-                .lineTo(new Vector2d(46,18))
+                .lineTo(new Vector2d(46,-17))
                 .build();
         TrajectorySequence toParkRight = drive.trajectorySequenceBuilder(backdropRight.end())
-                .lineTo(new Vector2d(46,18))
+                .lineTo(new Vector2d(46,-17))
                 .build();
 
         Trajectory park = drive.trajectoryBuilder(toParkCenter.end())
                 .back(15)
                 .build();
 
+
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId","id",
                 hardwareMap.appContext.getPackageName());
 
         webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class,"Webcam 1"), cameraMonitorViewId);
 
-       PropDetector detector = new PropDetector(telemetry);
+        PropDetector detector = new PropDetector(telemetry);
 
         webcam.setPipeline(detector);
 
@@ -130,7 +126,7 @@ public class BlueRightAuto_YP_NewDetect extends LinearOpMode {
                 drive.claw.setPosition(.7);
                 sleep(150);
                 drive.spoolAngleRight.setPosition(-.175);
-                drive.followTrajectory(blueLeftBack);
+                drive.followTrajectory(redLeftBack);
                 sleep(50);
                 drive.followTrajectorySequence(toBackdrop);
                 sleep(50);
@@ -145,11 +141,11 @@ public class BlueRightAuto_YP_NewDetect extends LinearOpMode {
             case CENTER:
                 drive.spoolAngleRight.setPosition(.325);
                 drive.followTrajectory(purpleCenter);
-                sleep(50);
+                sleep(100);
                 drive.claw.setPosition(.7);
                 sleep(150);
                 drive.spoolAngleRight.setPosition(-.175);
-                drive.followTrajectory(blueCenterBack);
+                drive.followTrajectory(redCenterBack);
                 sleep(50);
                 drive.followTrajectorySequence(toBackdrop);
                 sleep(50);
@@ -164,11 +160,11 @@ public class BlueRightAuto_YP_NewDetect extends LinearOpMode {
             case RIGHT:
                 drive.spoolAngleRight.setPosition(.325);
                 drive.followTrajectory(purpleRight);
-                sleep(50);
+                sleep(100);
                 drive.claw.setPosition(.7);
                 sleep(150);
                 drive.spoolAngleRight.setPosition(-.175);
-                drive.followTrajectory(blueRightBack);
+                drive.followTrajectory(redRightBack);
                 sleep(50);
                 drive.followTrajectorySequence(toBackdrop);
                 sleep(50);
@@ -198,14 +194,14 @@ public class BlueRightAuto_YP_NewDetect extends LinearOpMode {
             RIGHT
         }
 
-        private Location location;
+        private PropDetector.Location location;
 
         static final Rect LEFTBOX = new Rect(
                 new Point(100,130),
                 new Point(250,395));
         static final Rect CENTERBOX = new Rect(
-                new Point(830,25),
-                new Point(980,300));
+                new Point(730,25),
+                new Point(880,300));
         static final Rect RIGHTBOX = new Rect(
                 new Point(1400,175),
                 new Point(1550,450));
@@ -216,14 +212,14 @@ public class BlueRightAuto_YP_NewDetect extends LinearOpMode {
         public Mat processFrame(Mat input){
             Imgproc.cvtColor(input,mat,Imgproc.COLOR_RGB2HSV);
 
-            //range of blue
-            Scalar lowHSV = new Scalar(105,100,20);
-            Scalar highHSV = new Scalar(135,255,255);
+            //range of red
+            Scalar lowHSV = new Scalar(100,100,20);
+            Scalar highHSV = new Scalar(180,255,255);
 
-            //only displays blue pixels
+            //only displays red pixels
             Core.inRange(mat,lowHSV,highHSV,mat);
 
-            //creates boxes for blue detection
+            //creates boxes for red detection
             Mat left = mat.submat(LEFTBOX);
             Mat center = mat.submat(CENTERBOX);
             Mat right = mat.submat(RIGHTBOX);

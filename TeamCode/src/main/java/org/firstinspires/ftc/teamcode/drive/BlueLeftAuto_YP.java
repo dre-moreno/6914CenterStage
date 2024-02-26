@@ -21,8 +21,8 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvPipeline;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-@Autonomous(name = "Comp: Blue Left - P&Y&W - New Detect", group = "Blue Auto - YPW - New Detect")
-public class BlueLeftAuto_YPW_NewDetect extends LinearOpMode {
+@Autonomous(name = "Comp: Blue Left - P&Y", group = "Blue Auto - YP")
+public class BlueLeftAuto_YP extends LinearOpMode {
 
     OpenCvWebcam webcam;
 
@@ -42,10 +42,10 @@ public class BlueLeftAuto_YPW_NewDetect extends LinearOpMode {
                 .lineTo(new Vector2d(37 ,40))
                 .build();
 
-//        TrajectorySequence parkLeft = drive.trajectorySequenceBuilder(purpleLeft.end())
-//                .lineTo(new Vector2d(50,69))
-//                .back(10)
-//                .build();
+        TrajectorySequence parkLeft = drive.trajectorySequenceBuilder(purpleLeft.end())
+                .lineTo(new Vector2d(50,69))
+                .back(10)
+                .build();
 
         Trajectory backdropCenter = drive.trajectoryBuilder(new Pose2d(12,70,3*Math.PI/2))
                 .lineToLinearHeading(new Pose2d(52,43,Math.PI))
@@ -54,10 +54,10 @@ public class BlueLeftAuto_YPW_NewDetect extends LinearOpMode {
         Trajectory purpleCenter = drive.trajectoryBuilder(backdropCenter.end())
                 .lineTo(new Vector2d(30,30))
                 .build();
-//        TrajectorySequence parkCenter = drive.trajectorySequenceBuilder(purpleCenter.end())
-//                .lineTo(new Vector2d(50,69))
-//                .back(10)
-//                .build();
+        TrajectorySequence parkCenter = drive.trajectorySequenceBuilder(purpleCenter.end())
+                .lineTo(new Vector2d(50,69))
+                .back(10)
+                .build();
 
         Trajectory backdropRight = drive.trajectoryBuilder(new Pose2d(12,70,3*Math.PI/2))
                 .lineToLinearHeading(new Pose2d(52,35,Math.PI))
@@ -66,31 +66,9 @@ public class BlueLeftAuto_YPW_NewDetect extends LinearOpMode {
         Trajectory purpleRight = drive.trajectoryBuilder(backdropRight.end())
                 .lineTo(new Vector2d(15,40))
                 .build();
-//        TrajectorySequence parkRight = drive.trajectorySequenceBuilder(purpleRight.end())
-//                .lineTo(new Vector2d(50,69))
-//                .back(10)
-//                .build();
-
-        //white collection
-        Trajectory lineWhiteLeft = drive.trajectoryBuilder(purpleLeft.end())
-                .lineTo(new Vector2d(46,19))
-                .build();
-        Trajectory lineWhiteCenter = drive.trajectoryBuilder(purpleCenter.end())
-                .lineTo(new Vector2d(46,19))
-                .build();
-        Trajectory lineWhiteRight = drive.trajectoryBuilder(purpleRight.end())
-                .lineTo(new Vector2d(46,19))
-                .build();
-
-        Trajectory goToWhite = drive.trajectoryBuilder(lineWhiteCenter.end())
-                .lineTo(new Vector2d(-52,19))
-                .build();
-
-
-        TrajectorySequence park = drive.trajectorySequenceBuilder(goToWhite.end())
-                .back(99)
-                .lineToLinearHeading(new Pose2d(50,69,0))
-                .forward(2)
+        TrajectorySequence parkRight = drive.trajectorySequenceBuilder(purpleRight.end())
+                .lineTo(new Vector2d(50,69))
+                .back(10)
                 .build();
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId","id",
@@ -131,18 +109,7 @@ public class BlueLeftAuto_YPW_NewDetect extends LinearOpMode {
                 sleep(50);
                 drive.spoolAngleRight.setPosition(-.175);
                 sleep(50);
-                //white collection
-                drive.followTrajectory(lineWhiteLeft);
-                drive.followTrajectory(goToWhite);
-                drive.spoolAngleRight.setPosition(.25);
-                sleep(1000);
-                drive.claw.setPosition(.99);
-                sleep(1000);
-                drive.spoolAngleRight.setPosition(0);
-                drive.followTrajectorySequence(park);
-                drive.spoolAngleRight.setPosition(.325);
-                sleep(100);
-                drive.claw.setPosition(.7);
+                drive.followTrajectorySequence(parkLeft);
                 sleep(100000000);
                 break;
             case CENTER:
@@ -158,18 +125,7 @@ public class BlueLeftAuto_YPW_NewDetect extends LinearOpMode {
                 sleep(50);
                 drive.spoolAngleRight.setPosition(-.175);
                 sleep(50);
-                //white collection
-                drive.followTrajectory(lineWhiteCenter);
-                drive.followTrajectory(goToWhite);
-                drive.spoolAngleRight.setPosition(.25);
-                sleep(1000);
-                drive.claw.setPosition(.99);
-                sleep(1000);
-                drive.spoolAngleRight.setPosition(0);
-                drive.followTrajectorySequence(park);
-                drive.spoolAngleRight.setPosition(.325);
-                sleep(100);
-                drive.claw.setPosition(.7);
+                drive.followTrajectorySequence(parkCenter);
                 sleep(100000000);
                 break;
             case RIGHT:
@@ -185,18 +141,7 @@ public class BlueLeftAuto_YPW_NewDetect extends LinearOpMode {
                 sleep(50);
                 drive.spoolAngleRight.setPosition(-.175);
                 sleep(50);
-                //white collection
-                drive.followTrajectory(lineWhiteRight);
-                drive.followTrajectory(goToWhite);
-                drive.spoolAngleRight.setPosition(.25);
-                sleep(1000);
-                drive.claw.setPosition(.99);
-                sleep(1000);
-                drive.spoolAngleRight.setPosition(0);
-                drive.followTrajectorySequence(park);
-                drive.spoolAngleRight.setPosition(.325);
-                sleep(100);
-                drive.claw.setPosition(.7);
+                drive.followTrajectorySequence(parkRight);
                 sleep(100000000);
                 break;
         }

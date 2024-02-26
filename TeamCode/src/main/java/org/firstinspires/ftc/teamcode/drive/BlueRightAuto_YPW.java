@@ -1,197 +1,33 @@
 package org.firstinspires.ftc.teamcode.drive;
-
-/* Copyright (c) 2019 FIRST. All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted (subject to the limitations in the disclaimer below) provided that
- * the following conditions are met:
- *
- * Redistributions of source code must retain the above copyright notice, this list
- * of conditions and the following disclaimer.
- *
- * Redistributions in binary form must reproduce the above copyright notice, this
- * list of conditions and the following disclaimer in the documentation and/or
- * other materials provided with the distribution.
- *
- * Neither the name of FIRST nor the names of its contributors may be used to endorse or
- * promote products derived from this software without specific prior written permission.
- *
- * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS
- * LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
- * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-import android.util.Size;
-
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
-import org.firstinspires.ftc.vision.VisionPortal;
-import org.firstinspires.ftc.vision.tfod.TfodProcessor;
+import org.opencv.core.Core;
+import org.opencv.core.Mat;
+import org.opencv.core.Point;
+import org.opencv.core.Rect;
+import org.opencv.core.Scalar;
+import org.opencv.imgproc.Imgproc;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
+import org.openftc.easyopencv.OpenCvPipeline;
+import org.openftc.easyopencv.OpenCvWebcam;
 
-import java.util.List;
-
-/*
- * This OpMode illustrates the basics of TensorFlow Object Detection,
- * including Java Builder structures for specifying Vision parameters.
- *
- * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list.
- */
-@Autonomous(name = "Comp: Blue Right - P&Y&W", group = "Blue Auto - YPW")
+@TeleOp(name = "Comp: Blue Right - PYW", group = "Blue Auto - YPW")
 public class BlueRightAuto_YPW extends LinearOpMode {
 
-    private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
 
-    // TFOD_MODEL_ASSET points to a model file stored in the project Asset location,
-    // this is only used for Android Studio when using models in Assets.
-    private static final String TFOD_MODEL_ASSET = "blueMarkerV2.tflite";
-    // TFOD_MODEL_FILE points to a model file stored onboard the Robot Controller's storage,
-    // this is used when uploading models directly to the RC using the model upload interface.
-    private static final String TFOD_MODEL_FILE = "/sdcard/FIRST/tflitemodels/blueMarkerV2.tflite";
-    // Define the labels recognized in the model for TFOD (must be in training order!)
-    private static final String[] LABELS = {
-            "BlueCenter",
-            "BlueLeft",
-            "BlueRight"
-    };
-
-    /**
-     * The variable to store our instance of the TensorFlow Object Detection processor.
-     */
-    private TfodProcessor tfod;
-
-    /**
-     * The variable to store our instance of the vision portal.
-     */
-    private VisionPortal visionPortal;
-
+    OpenCvWebcam webcam;
 
     @Override
-    public void runOpMode() {
-
-        initTfod();
-
-        // Wait for the DS start button to be touched.
-        telemetry.addData("DS preview on/off", "3 dots, Camera Stream");
-        telemetry.addData(">", "Touch Play to start OpMode");
-        telemetry.update();
-
-
-        Hardware6914 drive = new Hardware6914(hardwareMap);
-        drive.claw.setPosition(1);
-        drive.backPixel.setPosition(0);
-        waitForStart();
-
-        if (opModeIsActive()) {
-            while (opModeIsActive()) {
-
-//                drive.spoolAngleRight.setPosition(.23);
-                telemetryTfod();
-
-                // Push telemetry to the Driver Station.
-                telemetry.update();
-
-                // Save CPU resources; can resume streaming when needed.
-                if (gamepad1.dpad_down) {
-                    visionPortal.stopStreaming();
-                } else if (gamepad1.dpad_up) {
-                    visionPortal.resumeStreaming();
-                }
-
-                // Share the CPU.
-                sleep(20);
-            }
-        }
-
-        // Save more CPU resources when camera is no longer needed.
-        visionPortal.close();
-
-    }   // end runOpMode()
-
-    /**
-     * Initialize the TensorFlow Object Detection processor.
-     */
-    private void initTfod() {
-
-        // Create the TensorFlow processor by using a builder.
-        tfod = new TfodProcessor.Builder()
-
-                // With the following lines commented out, the default TfodProcessor Builder
-                // will load the default model for the season. To define a custom model to load,
-                // choose one of the following:
-                //   Use setModelAssetName() if the custom TF Model is built in as an asset (AS only).
-                //   Use setModelFileName() if you have downloaded a custom team model to the Robot Controller.
-                //.setModelAssetName(TFOD_MODEL_ASSET)
-                .setModelFileName(TFOD_MODEL_FILE)
-
-                // The following default settings are available to un-comment and edit as needed to
-                // set parameters for custom models.
-                .setModelLabels(LABELS)
-                //.setIsModelTensorFlow2(true)
-                //.setIsModelQuantized(true)
-                //.setModelInputSize(300)
-                .setModelAspectRatio(16.0 / 9.0)
-
-                .build();
-
-        // Create the vision portal by using a builder.
-        VisionPortal.Builder builder = new VisionPortal.Builder();
-
-        // Set the camera (webcam vs. built-in RC phone camera).
-        if (USE_WEBCAM) {
-            builder.setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"));
-        } else {
-            builder.setCamera(BuiltinCameraDirection.BACK);
-        }
-
-        // Choose a camera resolution. Not all cameras support all resolutions.
-        builder.setCameraResolution(new Size(1920, 1080));
-
-        // Enable the RC preview (LiveView).  Set "false" to omit camera monitoring.
-        builder.enableLiveView(true);
-
-        // Set the stream format; MJPEG uses less bandwidth than default YUY2.
-        builder.setStreamFormat(VisionPortal.StreamFormat.YUY2);
-
-        // Choose whether or not LiveView stops if no processors are enabled.
-        // If set "true", monitor shows solid orange screen if no processors enabled.
-        // If set "false", monitor shows camera view without annotations.
-        builder.setAutoStopLiveView(false);
-
-        // Set and enable the processor.
-        builder.addProcessor(tfod);
-
-        // Build the Vision Portal, using the above settings.
-        visionPortal = builder.build();
-
-        // Set confidence threshold for TFOD recognitions, at any time.
-        tfod.setMinResultConfidence(0.75f);
-
-        // Disable or re-enable the TFOD processor at any time.
-        //visionPortal.setProcessorEnabled(tfod, true);
-
-    }   // end method initTfod()
-
-    /**
-     * Add telemetry about TensorFlow Object Detection (TFOD) recognitions.
-     */
-    private void telemetryTfod() {
+    public void runOpMode() throws InterruptedException {
 
         Hardware6914 drive = new Hardware6914(hardwareMap);
 
@@ -269,25 +105,33 @@ public class BlueRightAuto_YPW extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(51,19,0))
                 .build();
 
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId","id",
+                hardwareMap.appContext.getPackageName());
 
+        webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class,"Webcam 1"), cameraMonitorViewId);
 
+        PropDetector detector = new PropDetector(telemetry);
 
-        List<Recognition> currentRecognitions = tfod.getRecognitions();
-        telemetry.addData("# Objects Detected", currentRecognitions.size());
+        webcam.setPipeline(detector);
 
-        // Step through the list of recognitions and display info for each one.
-        for (Recognition recognition : currentRecognitions) {
-            double x = (recognition.getLeft() + recognition.getRight()) / 2 ;
-            double y = (recognition.getTop()  + recognition.getBottom()) / 2 ;
+        webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+            @Override
+            public void onOpened() {
+                webcam.startStreaming(1920,1080,OpenCvCameraRotation.UPRIGHT);
+            }
+            @Override
+            public void onError(int errorCode) {
+                //called if cannot be opened
+            }
+        });
 
-            telemetry.addData(""," ");
-            telemetry.addData("Image", "%s (%.0f %% Conf.)", recognition.getLabel(), recognition.getConfidence() * 100);
-            telemetry.addData("- Position", "%.0f / %.0f", x, y);
-            telemetry.addData("- Size", "%.0f x %.0f", recognition.getWidth(), recognition.getHeight());
+        waitForStart();
 
+        telemetry.addData("Analysis", detector.getLocation());
+        telemetry.update();
 
-            if(recognition.getLabel().equals("BlueLeft")){
-
+        switch (detector.getLocation()){
+            case LEFT:
                 drive.spoolAngleRight.setPosition(.325);
                 drive.followTrajectory(purpleLeft);
                 sleep(50);
@@ -318,9 +162,8 @@ public class BlueRightAuto_YPW extends LinearOpMode {
                 drive.claw.setPosition(.7);
 
                 sleep(100000000);
-
-            } else if (recognition.getLabel().equals("BlueCenter")){
-
+                break;
+            case CENTER:
                 drive.spoolAngleRight.setPosition(.325);
                 drive.followTrajectory(purpleCenter);
                 sleep(50);
@@ -351,9 +194,8 @@ public class BlueRightAuto_YPW extends LinearOpMode {
                 drive.claw.setPosition(.7);
 
                 sleep(100000000);
-
-            } else if (recognition.getLabel().equals("BlueRight")){
-
+                break;
+            case RIGHT:
                 drive.spoolAngleRight.setPosition(.325);
                 drive.followTrajectory(purpleRight);
                 sleep(50);
@@ -384,12 +226,108 @@ public class BlueRightAuto_YPW extends LinearOpMode {
                 drive.claw.setPosition(.7);
 
                 sleep(100000000);
+                break;
+        }
 
+    }
+
+
+
+
+
+    public static class PropDetector extends OpenCvPipeline{
+        Telemetry telemetry;
+        Mat mat = new Mat();
+
+        public enum Location{
+            LEFT,
+            CENTER,
+            RIGHT
+        }
+
+        private Location location;
+
+        static final Rect LEFTBOX = new Rect(
+                new Point(100,130),
+                new Point(250,395));
+        static final Rect CENTERBOX = new Rect(
+                new Point(830,25),
+                new Point(980,300));
+        static final Rect RIGHTBOX = new Rect(
+                new Point(1400,175),
+                new Point(1550,450));
+
+        public PropDetector(Telemetry t){ telemetry = t;}
+
+        @Override
+        public Mat processFrame(Mat input){
+            Imgproc.cvtColor(input,mat,Imgproc.COLOR_RGB2HSV);
+
+            //range of blue
+            Scalar lowHSV = new Scalar(105,100,20);
+            Scalar highHSV = new Scalar(135,255,255);
+
+            //only displays blue pixels
+            Core.inRange(mat,lowHSV,highHSV,mat);
+
+            //creates boxes for blue detection
+            Mat left = mat.submat(LEFTBOX);
+            Mat center = mat.submat(CENTERBOX);
+            Mat right = mat.submat(RIGHTBOX);
+
+            double avgL = Core.mean(left).val[0];
+            double avgC = Core.mean(center).val[0];
+            double avgR = Core.mean(right).val[0];
+
+            left.release();
+            center.release();
+            right.release();
+
+            telemetry.addData("Left Raw Value", (int) Core.sumElems(left).val[0]);
+            telemetry.addData("Center Raw Value", (int) Core.sumElems(center).val[0]);
+            telemetry.addData("Right Raw Value", (int) Core.sumElems(right).val[0]);
+
+            telemetry.addData("Left %: ", Math.round(avgL*100) + "%");
+            telemetry.addData("Center %: ", Math.round(avgC*100) + "%");
+            telemetry.addData("Right %: ", Math.round(avgR*100) + "%");
+
+
+            double maxOneTwo = Math.max(avgL,avgC);
+            double max = Math.max(maxOneTwo,avgR);
+
+            if(max == avgL){
+                //on Left
+                location = Location.LEFT;
+                telemetry.addData("Prop Location: ", "LEFT");
+            } else if(max == avgC){
+                //on Center
+                location = Location.CENTER;
+                telemetry.addData("Prop Location: ", "CENTER");
+            }else {
+                //on Right
+                location = Location.RIGHT;
+                telemetry.addData("Prop Location: ", "RIGHT");
             }
 
+            telemetry.update();
 
-        }   // end for() loop
+            Imgproc.cvtColor(mat,mat,Imgproc.COLOR_GRAY2RGB);
 
-    }   // end method telemetryTfod()
+            Scalar edge = new Scalar(0, 0, 255);
+            Scalar found = new Scalar(0, 255, 0);
 
-}   // end class
+
+            Imgproc.rectangle(mat,LEFTBOX,location == Location.LEFT? found:edge, max == avgL? -1:2);
+            Imgproc.rectangle(mat,CENTERBOX,location == Location.CENTER? found:edge,max == avgC? -1:2);
+            Imgproc.rectangle(mat,RIGHTBOX,location == Location.RIGHT? found:edge,max == avgR? -1:2);
+
+
+            return mat;
+        }
+        public Location getLocation(){
+            return location;
+        }
+
+    }
+
+}

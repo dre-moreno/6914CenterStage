@@ -21,77 +21,77 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvPipeline;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-@Autonomous(name = "Comp: Red Left P&Y - New Detect", group = "Red Auto - YP - New Detect")
-public class RedLeftAuto_YP_NewDetect extends LinearOpMode {
+@Autonomous(name = "Comp: Blue Left - P&Y&W", group = "Blue Auto - YPW")
+public class BlueLeftAuto_YPW extends LinearOpMode {
 
     OpenCvWebcam webcam;
 
     @Override
     public void runOpMode() throws InterruptedException {
+
         Hardware6914 drive = new Hardware6914(hardwareMap);
 
-        drive.setPoseEstimate(new Pose2d(-34,-70,Math.PI/2));
+        drive.setPoseEstimate(new Pose2d(12,70,3*Math.PI/2));
 
-        Trajectory purpleLeft = drive.trajectoryBuilder(new Pose2d(-34,-70,Math.PI/2))
-                .lineTo(new Vector2d(-44,-55))
+
+        Trajectory backdropLeft = drive.trajectoryBuilder(new Pose2d(12,70,3*Math.PI/2))
+                .lineToLinearHeading(new Pose2d(52,48,Math.PI))
                 .build();
 
-        Trajectory purpleCenter = drive.trajectoryBuilder(new Pose2d(-34,-70,Math.PI/2))
-                .lineTo(new Vector2d(-38,-45))
+        Trajectory purpleLeft = drive.trajectoryBuilder(backdropLeft.end())
+                .lineTo(new Vector2d(37 ,40))
                 .build();
 
-        Trajectory purpleRight = drive.trajectoryBuilder(new Pose2d(-34,-70,Math.PI/2))
-                .splineToLinearHeading(new Pose2d(-38,-40,0),Math.PI/2)
+//        TrajectorySequence parkLeft = drive.trajectorySequenceBuilder(purpleLeft.end())
+//                .lineTo(new Vector2d(50,69))
+//                .back(10)
+//                .build();
+
+        Trajectory backdropCenter = drive.trajectoryBuilder(new Pose2d(12,70,3*Math.PI/2))
+                .lineToLinearHeading(new Pose2d(52,43,Math.PI))
+                .build();
+
+        Trajectory purpleCenter = drive.trajectoryBuilder(backdropCenter.end())
+                .lineTo(new Vector2d(30,30))
+                .build();
+//        TrajectorySequence parkCenter = drive.trajectorySequenceBuilder(purpleCenter.end())
+//                .lineTo(new Vector2d(50,69))
+//                .back(10)
+//                .build();
+
+        Trajectory backdropRight = drive.trajectoryBuilder(new Pose2d(12,70,3*Math.PI/2))
+                .lineToLinearHeading(new Pose2d(52,35,Math.PI))
+                .build();
+
+        Trajectory purpleRight = drive.trajectoryBuilder(backdropRight.end())
+                .lineTo(new Vector2d(15,40))
+                .build();
+//        TrajectorySequence parkRight = drive.trajectorySequenceBuilder(purpleRight.end())
+//                .lineTo(new Vector2d(50,69))
+//                .back(10)
+//                .build();
+
+        //white collection
+        Trajectory lineWhiteLeft = drive.trajectoryBuilder(purpleLeft.end())
+                .lineTo(new Vector2d(46,19))
+                .build();
+        Trajectory lineWhiteCenter = drive.trajectoryBuilder(purpleCenter.end())
+                .lineTo(new Vector2d(46,19))
+                .build();
+        Trajectory lineWhiteRight = drive.trajectoryBuilder(purpleRight.end())
+                .lineTo(new Vector2d(46,19))
+                .build();
+
+        Trajectory goToWhite = drive.trajectoryBuilder(lineWhiteCenter.end())
+                .lineTo(new Vector2d(-52,19))
                 .build();
 
 
-        Trajectory redLeftBack = drive.trajectoryBuilder(purpleLeft.end())
-                .lineTo(new Vector2d(-55,-60))
+        TrajectorySequence park = drive.trajectorySequenceBuilder(goToWhite.end())
+                .back(99)
+                .lineToLinearHeading(new Pose2d(50,69,0))
+                .forward(2)
                 .build();
-
-        Trajectory redCenterBack = drive.trajectoryBuilder(purpleCenter.end())
-                .lineTo(new Vector2d(-55,-60))
-                .build();
-
-        Trajectory redRightBack = drive.trajectoryBuilder(purpleRight.end())
-                .lineToLinearHeading(new Pose2d(-55,-60,Math.PI/2))
-                .build();
-
-        TrajectorySequence toBackdrop = drive.trajectorySequenceBuilder(new Pose2d(-55,-60,Math.PI/2))
-                .lineToLinearHeading(new Pose2d(-55,-15,Math.PI/2))
-                .lineTo(new Vector2d(-49,-15))
-                .turn(Math.PI/2)
-                .back(95)
-                .build();
-
-        Trajectory backdropLeft = drive.trajectoryBuilder(toBackdrop.end())
-                .lineToLinearHeading(new Pose2d(50,-38,Math.PI))
-                .build();
-
-        Trajectory backdropCenter = drive.trajectoryBuilder(toBackdrop.end())
-                .lineToLinearHeading(new Pose2d(50,-42.5,Math.PI))
-                .build();
-
-
-        Trajectory backdropRight = drive.trajectoryBuilder(toBackdrop.end())
-                .lineToLinearHeading(new Pose2d(50,-48,Math.PI))
-                .build();
-
-
-        TrajectorySequence toParkCenter = drive.trajectorySequenceBuilder(backdropCenter.end())
-                .lineTo(new Vector2d(46,-17))
-                .build();
-        TrajectorySequence toParkLeft = drive.trajectorySequenceBuilder(backdropLeft.end())
-                .lineTo(new Vector2d(46,-17))
-                .build();
-        TrajectorySequence toParkRight = drive.trajectorySequenceBuilder(backdropRight.end())
-                .lineTo(new Vector2d(46,-17))
-                .build();
-
-        Trajectory park = drive.trajectoryBuilder(toParkCenter.end())
-                .back(15)
-                .build();
-
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId","id",
                 hardwareMap.appContext.getPackageName());
@@ -120,60 +120,83 @@ public class RedLeftAuto_YP_NewDetect extends LinearOpMode {
 
         switch (detector.getLocation()){
             case LEFT:
-                drive.spoolAngleRight.setPosition(.325);
-                drive.followTrajectory(purpleLeft);
-                sleep(50);
-                drive.claw.setPosition(.7);
-                sleep(150);
-                drive.spoolAngleRight.setPosition(-.175);
-                drive.followTrajectory(redLeftBack);
-                sleep(50);
-                drive.followTrajectorySequence(toBackdrop);
-                sleep(50);
                 drive.followTrajectory(backdropLeft);
+                sleep(50);
                 drive.backPixel.setPosition(.5);
                 sleep(2000);
                 drive.backPixel.setPosition(0);
-                drive.followTrajectorySequence(toParkLeft);
-                drive.followTrajectory(park);
+                drive.spoolAngleRight.setPosition(.325);
+                drive.followTrajectory(purpleLeft);
+                drive.claw.setPosition(.7);
+                sleep(50);
+                drive.spoolAngleRight.setPosition(-.175);
+                sleep(50);
+                //white collection
+                drive.followTrajectory(lineWhiteLeft);
+                drive.followTrajectory(goToWhite);
+                drive.spoolAngleRight.setPosition(.25);
+                sleep(1000);
+                drive.claw.setPosition(.99);
+                sleep(1000);
+                drive.spoolAngleRight.setPosition(0);
+                drive.followTrajectorySequence(park);
+                drive.spoolAngleRight.setPosition(.325);
+                sleep(100);
+                drive.claw.setPosition(.7);
                 sleep(100000000);
                 break;
             case CENTER:
+                drive.followTrajectory(backdropCenter);
+                sleep(50);
+                drive.backPixel.setPosition(.5);
+                sleep(2000);
+                drive.backPixel.setPosition(0);
                 drive.spoolAngleRight.setPosition(.325);
                 drive.followTrajectory(purpleCenter);
                 sleep(100);
                 drive.claw.setPosition(.7);
-                sleep(150);
+                sleep(50);
                 drive.spoolAngleRight.setPosition(-.175);
-                drive.followTrajectory(redCenterBack);
                 sleep(50);
-                drive.followTrajectorySequence(toBackdrop);
-                sleep(50);
-                drive.followTrajectory(backdropCenter);
-                drive.backPixel.setPosition(.5);
-                sleep(2000);
-                drive.backPixel.setPosition(0);
-                drive.followTrajectorySequence(toParkCenter);
-                drive.followTrajectory(park);
+                //white collection
+                drive.followTrajectory(lineWhiteCenter);
+                drive.followTrajectory(goToWhite);
+                drive.spoolAngleRight.setPosition(.25);
+                sleep(1000);
+                drive.claw.setPosition(.99);
+                sleep(1000);
+                drive.spoolAngleRight.setPosition(0);
+                drive.followTrajectorySequence(park);
+                drive.spoolAngleRight.setPosition(.325);
+                sleep(100);
+                drive.claw.setPosition(.7);
                 sleep(100000000);
                 break;
             case RIGHT:
+                drive.followTrajectory(backdropRight);
+                sleep(50);
+                drive.backPixel.setPosition(.5);
+                sleep(2000);
+                drive.backPixel.setPosition(0);
                 drive.spoolAngleRight.setPosition(.325);
                 drive.followTrajectory(purpleRight);
                 sleep(100);
                 drive.claw.setPosition(.7);
-                sleep(150);
+                sleep(50);
                 drive.spoolAngleRight.setPosition(-.175);
-                drive.followTrajectory(redRightBack);
                 sleep(50);
-                drive.followTrajectorySequence(toBackdrop);
-                sleep(50);
-                drive.followTrajectory(backdropRight);
-                drive.backPixel.setPosition(.5);
-                sleep(2000);
-                drive.backPixel.setPosition(0);
-                drive.followTrajectorySequence(toParkRight);
-                drive.followTrajectory(park);
+                //white collection
+                drive.followTrajectory(lineWhiteRight);
+                drive.followTrajectory(goToWhite);
+                drive.spoolAngleRight.setPosition(.25);
+                sleep(1000);
+                drive.claw.setPosition(.99);
+                sleep(1000);
+                drive.spoolAngleRight.setPosition(0);
+                drive.followTrajectorySequence(park);
+                drive.spoolAngleRight.setPosition(.325);
+                sleep(100);
+                drive.claw.setPosition(.7);
                 sleep(100000000);
                 break;
         }
@@ -184,7 +207,7 @@ public class RedLeftAuto_YP_NewDetect extends LinearOpMode {
 
 
 
-    public static class PropDetector extends OpenCvPipeline {
+    public static class PropDetector extends OpenCvPipeline{
         Telemetry telemetry;
         Mat mat = new Mat();
 
@@ -193,15 +216,14 @@ public class RedLeftAuto_YP_NewDetect extends LinearOpMode {
             CENTER,
             RIGHT
         }
-
-        private PropDetector.Location location;
+        private Location location;
 
         static final Rect LEFTBOX = new Rect(
                 new Point(100,130),
                 new Point(250,395));
         static final Rect CENTERBOX = new Rect(
-                new Point(730,25),
-                new Point(880,300));
+                new Point(830,25),
+                new Point(980,300));
         static final Rect RIGHTBOX = new Rect(
                 new Point(1400,175),
                 new Point(1550,450));
@@ -212,14 +234,14 @@ public class RedLeftAuto_YP_NewDetect extends LinearOpMode {
         public Mat processFrame(Mat input){
             Imgproc.cvtColor(input,mat,Imgproc.COLOR_RGB2HSV);
 
-            //range of red
-            Scalar lowHSV = new Scalar(100,100,20);
-            Scalar highHSV = new Scalar(180,255,255);
+            //range of blue
+            Scalar lowHSV = new Scalar(105,100,20);
+            Scalar highHSV = new Scalar(135,255,255);
 
-            //only displays red pixels
+            //only displays blue pixels
             Core.inRange(mat,lowHSV,highHSV,mat);
 
-            //creates boxes for red detection
+            //creates boxes for blue detection
             Mat left = mat.submat(LEFTBOX);
             Mat center = mat.submat(CENTERBOX);
             Mat right = mat.submat(RIGHTBOX);
@@ -278,4 +300,5 @@ public class RedLeftAuto_YP_NewDetect extends LinearOpMode {
         }
 
     }
+
 }
