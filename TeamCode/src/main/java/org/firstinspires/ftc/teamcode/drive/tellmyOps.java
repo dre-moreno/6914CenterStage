@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.drive;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -15,9 +16,26 @@ public class tellmyOps extends LinearOpMode {
         Hardware6914 drive = new Hardware6914(hardwareMap);
 
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        drive.setPoseEstimate(new Pose2d(12,70,3*Math.PI/2));
 
         double rotation = 384.5;
+
+        telemetry.addData("Where Parked?", "Up: Blue Corner, Right: Blue Middle, Left: Red Middle, Down: Red Corner");
+
+        if(gamepad1.dpad_up){
+            drive.setPoseEstimate(new Pose2d(60,69,Math.PI));
+            telemetry.addData("Where Parked?", "Up: Blue Corner");
+        } else if (gamepad1.dpad_right){
+            drive.setPoseEstimate(new Pose2d(60,18,Math.PI));
+            telemetry.addData("Where Parked?", "Right: Blue Middle");
+        } else if (gamepad1.dpad_left){
+            drive.setPoseEstimate(new Pose2d(60,-18,Math.PI));
+            telemetry.addData("Where Parked?", "Left: Red Middle");
+        } else {
+            drive.setPoseEstimate(new Pose2d(-60,69,Math.PI));
+            telemetry.addData("Where Parked?", "Down: Red Corner");
+        }
+
+
 
         waitForStart();
 
@@ -111,6 +129,14 @@ public class tellmyOps extends LinearOpMode {
                 drive.lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.YELLOW);
             } else {
                 drive.lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
+            }
+
+            if(gamepad1.x){
+                Trajectory paper = drive.trajectoryBuilder(drive.getPoseEstimate())
+                        .lineToLinearHeading(new Pose2d(15,0,Math.PI))
+                        .build();
+
+                drive.followTrajectory(paper);
             }
 
             Pose2d poseEstimate = drive.getPoseEstimate();

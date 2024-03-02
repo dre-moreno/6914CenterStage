@@ -76,11 +76,31 @@ public class RedRightAuto_YPW extends LinearOpMode {
                 .build();
 
 
-        TrajectorySequence park = drive.trajectorySequenceBuilder(goToWhite.end())
+        TrajectorySequence parkCorner = drive.trajectorySequenceBuilder(goToWhite.end())
+                .back(99)
+                .lineToLinearHeading(new Pose2d(50,-17,0))
+                .forward(2)
+                .build();
+
+        TrajectorySequence parkMiddle = drive.trajectorySequenceBuilder(goToWhite.end())
                 .back(99)
                 .lineToLinearHeading(new Pose2d(50,-69,0))
                 .forward(2)
                 .build();
+
+        TrajectorySequence park = null;
+
+        telemetry.addData("Park Location?", "D-Pad Left for Middle : D-Pad Right for Corner");
+        telemetry.update();
+        if(gamepad1.dpad_left){
+            park = parkMiddle;
+            telemetry.addData("Park Location: ", "Middle");
+            telemetry.update();
+        } else if(gamepad1.dpad_right){
+            park = parkCorner;
+            telemetry.addData("Park Location: ", "Corner");
+            telemetry.update();
+        }
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId","id",
                 hardwareMap.appContext.getPackageName());
@@ -101,6 +121,8 @@ public class RedRightAuto_YPW extends LinearOpMode {
                 //called if cannot be opened
             }
         });
+
+
 
         waitForStart();
 
