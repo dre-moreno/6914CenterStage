@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.drive;
 
+import android.util.Size;
+
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
@@ -9,6 +11,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
+import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
@@ -33,43 +38,29 @@ public class BlueLeftAuto_YP extends LinearOpMode {
 
         drive.setPoseEstimate(new Pose2d(12,70,3*Math.PI/2));
 
+        AprilTagDetection tag;
 
-        Trajectory backdropLeft = drive.trajectoryBuilder(new Pose2d(12,70,3*Math.PI/2))
-                .lineToLinearHeading(new Pose2d(52,48,Math.PI))
-                .build();
 
-        Trajectory purpleLeft = drive.trajectoryBuilder(backdropLeft.end())
-                .lineTo(new Vector2d(37 ,40))
-                .build();
-
-        TrajectorySequence parkLeft = drive.trajectorySequenceBuilder(purpleLeft.end())
-                .lineTo(new Vector2d(50,69))
-                .back(10)
+        AprilTagProcessor tagProcessor = new AprilTagProcessor.Builder()
+                .setDrawAxes(true)
+                .setDrawCubeProjection(true)
+                .setDrawTagID(true)
+                .setDrawTagOutline(true)
+                .setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11)
                 .build();
 
-        Trajectory backdropCenter = drive.trajectoryBuilder(new Pose2d(12,70,3*Math.PI/2))
-                .lineToLinearHeading(new Pose2d(52,43,Math.PI))
+        VisionPortal visionPortal = new VisionPortal.Builder()
+                .addProcessor(tagProcessor)
+                .setCamera(hardwareMap.get(WebcamName.class, "Webcam 2"))
+                .setCameraResolution(new Size(1280,720))
                 .build();
 
-        Trajectory purpleCenter = drive.trajectoryBuilder(backdropCenter.end())
-                .lineTo(new Vector2d(30,30))
-                .build();
-        TrajectorySequence parkCenter = drive.trajectorySequenceBuilder(purpleCenter.end())
-                .lineTo(new Vector2d(50,69))
-                .back(10)
-                .build();
 
-        Trajectory backdropRight = drive.trajectoryBuilder(new Pose2d(12,70,3*Math.PI/2))
-                .lineToLinearHeading(new Pose2d(52,35,Math.PI))
+        Trajectory backdrop = drive.trajectoryBuilder(new Pose2d(12,70,3*Math.PI/2))
+                .lineToLinearHeading(new Pose2d(40,43,Math.PI))
                 .build();
+        TrajectorySequence park;
 
-        Trajectory purpleRight = drive.trajectoryBuilder(backdropRight.end())
-                .lineTo(new Vector2d(15,40))
-                .build();
-        TrajectorySequence parkRight = drive.trajectorySequenceBuilder(purpleRight.end())
-                .lineTo(new Vector2d(50,69))
-                .back(10)
-                .build();
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId","id",
                 hardwareMap.appContext.getPackageName());
@@ -93,12 +84,36 @@ public class BlueLeftAuto_YP extends LinearOpMode {
 
         waitForStart();
 
+
         telemetry.addData("Analysis", detector.getLocation());
         telemetry.update();
 
         switch (detector.getLocation()){
             case LEFT:
-                drive.followTrajectory(backdropLeft);
+                drive.followTrajectory(backdrop);
+                sleep(1000);
+                tag = tagProcessor.getDetections().get(0);
+
+                Trajectory lineYellow = drive.trajectoryBuilder(backdrop.end())
+                        .lineToLinearHeading(new Pose2d(40 + (tag.ftcPose.y+4),43-(tag.ftcPose.x),Math.PI))
+                        .build();
+
+                Trajectory purpleLeft = drive.trajectoryBuilder(lineYellow.end())
+                        .lineTo(new Vector2d(37 ,40))
+                        .build();
+
+
+                park = drive.trajectorySequenceBuilder(purpleLeft.end())
+                        .lineToLinearHeading(new Pose2d(50,69,0))
+                        .forward(2)
+                        .build();
+
+                sleep(500);
+
+
+
+                drive.followTrajectory(lineYellow);
+
                 sleep(50);
                 drive.backPixel.setPosition(.5);
                 sleep(2000);
@@ -109,11 +124,25 @@ public class BlueLeftAuto_YP extends LinearOpMode {
                 sleep(50);
                 drive.spoolAngleRight.setPosition(-.175);
                 sleep(50);
-                drive.followTrajectorySequence(parkLeft);
+                drive.followTrajectorySequence(park);
                 sleep(100000000);
                 break;
             case CENTER:
-                drive.followTrajectory(backdropCenter);
+                drive.followTrajectory(backdrop);
+                sleep(1000);
+
+                tag = tagProcessor.getDetections().get(1);
+
+                Trajectory purpleCenter = drive.trajectoryBuilder(backdrop.end())
+                        .lineTo(new Vector2d(30,30))
+                        .build();
+
+                park = drive.trajectorySequenceBuilder(purpleCenter.end())
+                        .back(99)
+                        .lineToLinearHeading(new Pose2d(50,69,0))
+                        .forward(2)
+                        .build();
+
                 sleep(50);
                 drive.backPixel.setPosition(.5);
                 sleep(2000);
@@ -125,11 +154,29 @@ public class BlueLeftAuto_YP extends LinearOpMode {
                 sleep(50);
                 drive.spoolAngleRight.setPosition(-.175);
                 sleep(50);
-                drive.followTrajectorySequence(parkCenter);
+                drive.followTrajectorySequence(park);
                 sleep(100000000);
                 break;
             case RIGHT:
-                drive.followTrajectory(backdropRight);
+                drive.followTrajectory(backdrop);
+                sleep(1000);
+
+                tag = tagProcessor.getDetections().get(2);
+
+                lineYellow = drive.trajectoryBuilder(backdrop.end())
+                        .lineToLinearHeading(new Pose2d(40 + (tag.ftcPose.y+4),43-(tag.ftcPose.x),Math.PI))
+                        .build();
+
+                Trajectory purpleRight = drive.trajectoryBuilder(backdrop.end())
+                        .lineTo(new Vector2d(30,30))
+                        .build();
+
+                park = drive.trajectorySequenceBuilder(purpleRight.end())
+                        .lineToLinearHeading(new Pose2d(50,69,0))
+                        .forward(2)
+                        .build();
+
+                drive.followTrajectory(lineYellow);
                 sleep(50);
                 drive.backPixel.setPosition(.5);
                 sleep(2000);
@@ -141,7 +188,7 @@ public class BlueLeftAuto_YP extends LinearOpMode {
                 sleep(50);
                 drive.spoolAngleRight.setPosition(-.175);
                 sleep(50);
-                drive.followTrajectorySequence(parkRight);
+                drive.followTrajectorySequence(park);
                 sleep(100000000);
                 break;
         }

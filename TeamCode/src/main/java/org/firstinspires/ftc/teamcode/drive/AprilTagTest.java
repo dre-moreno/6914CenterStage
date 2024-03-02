@@ -62,16 +62,11 @@ public class AprilTagTest extends LinearOpMode {
 
                     drive.followTrajectory(backdrop);
                     sleep(1000);
-
                     AprilTagDetection tag = tagProcessor.getDetections().get(0);
-
 
                     Trajectory lineYellow = drive.trajectoryBuilder(backdrop.end())
                            .lineToLinearHeading(new Pose2d(40 + (tag.ftcPose.y+4),43-(tag.ftcPose.x),Math.PI))
                            .build();
-
-
-
 
                     sleep(500);
 
