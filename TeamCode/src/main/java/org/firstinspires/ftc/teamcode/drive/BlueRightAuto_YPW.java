@@ -85,13 +85,13 @@ public class BlueRightAuto_YPW extends LinearOpMode {
 
 
         Trajectory lineWhiteLeft = drive.trajectoryBuilder(backdropLeft.end())
-                .lineTo(new Vector2d(46,17))
+                .lineTo(new Vector2d(46,16))
                 .build();
         Trajectory lineWhiteCenter = drive.trajectoryBuilder(backdropCenter.end())
-                .lineTo(new Vector2d(46,17))
+                .lineTo(new Vector2d(46,16))
                 .build();
         Trajectory lineWhiteRight = drive.trajectoryBuilder(backdropRight.end())
-                .lineTo(new Vector2d(46,17))
+                .lineTo(new Vector2d(46,16))
                 .build();
 
         Trajectory goToWhite = drive.trajectoryBuilder(lineWhiteCenter.end())

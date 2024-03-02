@@ -54,10 +54,7 @@ public class BlueLeftAuto_YPW extends LinearOpMode {
         Trajectory purpleCenter = drive.trajectoryBuilder(backdropCenter.end())
                 .lineTo(new Vector2d(30,30))
                 .build();
-//        TrajectorySequence parkCenter = drive.trajectorySequenceBuilder(purpleCenter.end())
-//                .lineTo(new Vector2d(50,69))
-//                .back(10)
-//                .build();
+
 
         Trajectory backdropRight = drive.trajectoryBuilder(new Pose2d(12,70,3*Math.PI/2))
                 .lineToLinearHeading(new Pose2d(52,35,Math.PI))
@@ -66,24 +63,21 @@ public class BlueLeftAuto_YPW extends LinearOpMode {
         Trajectory purpleRight = drive.trajectoryBuilder(backdropRight.end())
                 .lineTo(new Vector2d(15,40))
                 .build();
-//        TrajectorySequence parkRight = drive.trajectorySequenceBuilder(purpleRight.end())
-//                .lineTo(new Vector2d(50,69))
-//                .back(10)
-//                .build();
+
 
         //white collection
         Trajectory lineWhiteLeft = drive.trajectoryBuilder(purpleLeft.end())
-                .lineTo(new Vector2d(46,19))
+                .lineTo(new Vector2d(46,16))
                 .build();
         Trajectory lineWhiteCenter = drive.trajectoryBuilder(purpleCenter.end())
-                .lineTo(new Vector2d(46,19))
+                .lineTo(new Vector2d(46,16))
                 .build();
         Trajectory lineWhiteRight = drive.trajectoryBuilder(purpleRight.end())
-                .lineTo(new Vector2d(46,19))
+                .lineTo(new Vector2d(46,16))
                 .build();
 
         Trajectory goToWhite = drive.trajectoryBuilder(lineWhiteCenter.end())
-                .lineTo(new Vector2d(-52,19))
+                .lineTo(new Vector2d(-52,16))
                 .build();
 
 

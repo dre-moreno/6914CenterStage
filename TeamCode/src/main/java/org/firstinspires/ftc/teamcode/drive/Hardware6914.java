@@ -76,6 +76,8 @@ public class Hardware6914 extends MecanumDrive {
 
     public Servo spoolAngleLeft, spoolAngleRight, claw,backPixel;
 
+    public RevBlinkinLedDriver lights;
+
 
 
     public CRServo planeShooter;
@@ -118,11 +120,14 @@ public class Hardware6914 extends MecanumDrive {
         hangRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
-       // planeShooter = hardwareMap.get(CRServo.class, "planeShooter");
+        planeShooter = hardwareMap.get(CRServo.class, "planeShooter");
         //spoolAngleLeft = hardwareMap.get(Servo.class, "spoolAngleLeft");
         spoolAngleRight = hardwareMap.get(Servo.class, "spoolAngleRight");
         claw = hardwareMap.get(Servo.class, "claw");
         backPixel = hardwareMap.get(Servo.class, "backPixel");
+
+        lights = hardwareMap.get(RevBlinkinLedDriver.class, "lights");
+
 
        // yellowDetector = hardwareMap.get(RevColorSensorV3.class,"yellowDetector");
 
@@ -152,11 +157,11 @@ public class Hardware6914 extends MecanumDrive {
         }
 
 
-        FL.setDirection(DcMotorSimple.Direction.FORWARD);
-        FR.setDirection(DcMotorSimple.Direction.REVERSE);
+        FL.setDirection(DcMotorSimple.Direction.REVERSE);
+        FR.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        BL.setDirection(DcMotorSimple.Direction.FORWARD);
-        BR.setDirection(DcMotorSimple.Direction.REVERSE);
+        BL.setDirection(DcMotorSimple.Direction.REVERSE);
+        BR.setDirection(DcMotorSimple.Direction.FORWARD);
 
         List<Integer> lastTrackingEncPositions = new ArrayList<>();
         List<Integer> lastTrackingEncVels = new ArrayList<>();

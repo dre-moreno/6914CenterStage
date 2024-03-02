@@ -56,25 +56,6 @@ public class AprilTagTest extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(40,43,Math.PI))
                 .build();
 
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId","id",
-                hardwareMap.appContext.getPackageName());
-
-
-        webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class,"Webcam 3"), cameraMonitorViewId);
-
-        YellowDetector detector = new YellowDetector(telemetry);
-
-        webcam.setPipeline(detector);
-        webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
-            @Override
-            public void onOpened() {
-                webcam.startStreaming(1280,720, OpenCvCameraRotation.UPRIGHT);
-            }
-            @Override
-            public void onError(int errorCode) {
-                //called if cannot be opened
-            }
-        });
         waitForStart();
 
         while(!isStopRequested() && opModeIsActive()){
@@ -86,40 +67,20 @@ public class AprilTagTest extends LinearOpMode {
 
 
                     Trajectory lineYellow = drive.trajectoryBuilder(backdrop.end())
-                           .lineToLinearHeading(new Pose2d(40,43-(tag.ftcPose.x),Math.PI))
+                           .lineToLinearHeading(new Pose2d(40 + (tag.ftcPose.y+4),43-(tag.ftcPose.x),Math.PI))
                            .build();
 
-                    TrajectorySequence placeYellowL = drive.trajectorySequenceBuilder(lineYellow.end())
-                            .lineTo(new Vector2d(40,43-(tag.ftcPose.x-1)))
-                            .back(11)
-                            .build();
 
-                    TrajectorySequence placeYellowR = drive.trajectorySequenceBuilder(lineYellow.end())
-                        .lineTo(new Vector2d(40,43-(tag.ftcPose.x+1)))
-                            .back(11)
-                        .build();
 
 
                     sleep(500);
 
             drive.followTrajectory(lineYellow);
 
-                    switch(detector.getLocation()){
-
-                        case ON:
-                            drive.followTrajectorySequence(placeYellowR);
-                            drive.backPixel.setPosition(0.5);
-
-                            break;
-                        case OFF:
-                            drive.followTrajectorySequence(placeYellowL);
-                            break;
-
-
-                    }
-
                     sleep(50);
                     drive.backPixel.setPosition(0.5);
+                    sleep(1000);
+                    drive.backPixel.setPosition(0);
                     sleep(1000000);
 
 
@@ -135,83 +96,6 @@ public class AprilTagTest extends LinearOpMode {
 
         }
 
-
-    }
-
-    public static class YellowDetector extends OpenCvPipeline {
-        Telemetry telemetry;
-        Mat mat = new Mat();
-
-        public enum Location{
-            ON,
-            OFF
-
-        }
-        private Location location;
-
-        static final Rect LEFTBOX = new Rect(
-                new Point(400,130),
-                new Point(600,400));
-
-
-
-        public YellowDetector(Telemetry t){ telemetry = t;}
-
-        @Override
-        public Mat processFrame(Mat input){
-            Imgproc.cvtColor(input,mat,Imgproc.COLOR_RGB2HSV);
-
-            //range of yellow
-            Scalar lowHSV = new Scalar(20, 100, 100);
-            Scalar highHSV = new Scalar(30, 255, 255);
-
-            //only displays yellow pixels
-            Core.inRange(mat,lowHSV,highHSV,mat);
-
-            //creates boxes for yellow detection
-            Mat left = mat.submat(LEFTBOX);
-
-            double avgL = Core.mean(left).val[0];
-
-
-            left.release();
-
-
-            telemetry.addData("Left Raw Value", (int) Core.sumElems(left).val[0]);
-
-
-            telemetry.addData("Left %: ", Math.round(avgL*100) + "%");
-
-
-
-
-            if(avgL > 50) {
-                //on Left
-                location = Location.ON;
-                telemetry.addData("Prop Location: ", "ON");
-            } else {
-                location = Location.OFF;
-                telemetry.addData("Prop Location: ", "OFF");
-            }
-
-
-            telemetry.update();
-
-            Imgproc.cvtColor(mat,mat,Imgproc.COLOR_GRAY2RGB);
-
-            Scalar edge = new Scalar(0, 0, 255);
-            Scalar found = new Scalar(0, 255, 0);
-
-
-            Imgproc.rectangle(mat,LEFTBOX,location == Location.ON? found:edge, avgL > 50? -1:2);
-
-
-
-            return mat;
-        }
-        public Location getLocation(){
-            return location;
-        }
 
     }
 
